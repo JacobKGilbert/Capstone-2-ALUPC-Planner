@@ -3,7 +3,9 @@ CREATE TABLE "users" (
   "first_name" text NOT NULL,
   "last_name" text NOT NULL, 
   "email" text UNIQUE NOT NULL,
-  "password" text NOT NULL
+  "password" text NOT NULL,
+  "is_admin" BOOLEAN NOT NULL,
+  "is_dept_head" BOOLEAN NOT NULL
 );
 
 
@@ -24,7 +26,7 @@ CREATE TABLE "dept_volunteers" (
 CREATE TABLE "events" (
   "id" int PRIMARY KEY,
   "date" date NOT NULL,
-  "dept_code" int
+  "dept_code" int NOT NULL
 );
 
 
@@ -45,7 +47,7 @@ CREATE TABLE "events_volunteers" (
 CREATE TABLE "unavailable" (
   "id" int PRIMARY KEY,
   "date" date NOT NULL,
-  "user_id" int
+  "user_id" int NOT NULL
 );
 
 
@@ -57,41 +59,51 @@ CREATE TABLE "user_position" (
 
 
 ALTER TABLE "departments" ADD
-FOREIGN KEY ("dept_head") REFERENCES "users" ("id");
+FOREIGN KEY ("dept_head") REFERENCES "users" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "dept_volunteers" ADD
-FOREIGN KEY ("dept_code") REFERENCES "departments" ("code");
+FOREIGN KEY ("dept_code") REFERENCES "departments" ("code") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "dept_volunteers" ADD
-FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "events" ADD
-FOREIGN KEY ("dept_code") REFERENCES "departments" ("code");
+FOREIGN KEY ("dept_code") REFERENCES "departments" ("code") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "events_volunteers" ADD
-FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "events_volunteers" ADD
-FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+FOREIGN KEY ("event_id") REFERENCES "events" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "events_volunteers" ADD
-FOREIGN KEY ("position_code") REFERENCES "positions" ("code");
+FOREIGN KEY ("position_code") REFERENCES "positions" ("code") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "unavailable" ADD
-FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "user_position" ADD
-FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON
+DELETE CASCADE;
 
 
 ALTER TABLE "user_position" ADD
-FOREIGN KEY ("position_code") REFERENCES "positions" ("code");
+FOREIGN KEY ("position_code") REFERENCES "positions" ("code") ON
+DELETE CASCADE;
 
