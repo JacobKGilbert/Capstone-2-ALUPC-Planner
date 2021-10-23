@@ -4,33 +4,61 @@ const { SECRET_KEY } = require("../config");
 
 describe("createToken", function () {
   test("works: not admin", function () {
-    const token = createToken({ username: "test", is_admin: false });
+    const token = createToken({ firstName: "test", lastName: "name", isAdmin: false, isDeptHead: false });
     const payload = jwt.verify(token, SECRET_KEY);
     expect(payload).toEqual({
       iat: expect.any(Number),
-      username: "test",
+      firstName: "test",
+      lastName: "name",
       isAdmin: false,
+      isDeptHead: false
     });
   });
 
   test("works: admin", function () {
-    const token = createToken({ username: "test", isAdmin: true });
+    const token = createToken({
+      firstName: 'test',
+      lastName: 'name',
+      isAdmin: true,
+      isDeptHead: false,
+    })
     const payload = jwt.verify(token, SECRET_KEY);
     expect(payload).toEqual({
       iat: expect.any(Number),
-      username: "test",
+      firstName: 'test',
+      lastName: 'name',
       isAdmin: true,
-    });
+      isDeptHead: false,
+    })
+  });
+
+  test("works: dept head", function () {
+    const token = createToken({
+      firstName: 'test',
+      lastName: 'name',
+      isAdmin: false,
+      isDeptHead: true,
+    })
+    const payload = jwt.verify(token, SECRET_KEY);
+    expect(payload).toEqual({
+      iat: expect.any(Number),
+      firstName: 'test',
+      lastName: 'name',
+      isAdmin: false,
+      isDeptHead: true,
+    })
   });
 
   test("works: default no admin", function () {
     // given the security risk if this didn't work, checking this specifically
-    const token = createToken({ username: "test" });
+    const token = createToken({ firstName: 'test', lastName: 'name' })
     const payload = jwt.verify(token, SECRET_KEY);
     expect(payload).toEqual({
       iat: expect.any(Number),
-      username: "test",
+      firstName: 'test',
+      lastName: 'name',
       isAdmin: false,
-    });
+      isDeptHead: false
+    })
   });
 });
