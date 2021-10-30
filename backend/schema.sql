@@ -4,6 +4,7 @@ CREATE TABLE "users" (
   "last_name" text NOT NULL, 
   "email" text UNIQUE NOT NULL,
   "password" text NOT NULL,
+  "needs_new_pwd" BOOLEAN DEFAULT TRUE,
   "is_admin" BOOLEAN NOT NULL,
   "is_dept_head" BOOLEAN NOT NULL
 );
