@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-// const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, updateUserQuery } = require("../helpers/sql");
 const {
   NotFoundError,
   BadRequestError,
@@ -14,138 +14,172 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 /** Related functions for users. */
 
 class User {
-  /** authenticate user with username, password.
+  /** authenticate user with email, password.
    *
-   * Returns { username, first_name, last_name, email, is_admin }
+   * Returns { first_name, last_name, email, isAdmin, isDeptHead }
    *
-   * Throws UnauthorizedError is user not found or wrong password.
+   * Throws UnauthorizedError if user not found or wrong password.
    **/
 
-  static async authenticate(username, password) {
+  static async authenticate(email, password) {
     // try to find the user first
     const result = await db.query(
-          `SELECT username,
-                  password,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
+      `SELECT id,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              email,
+              password,
+              is_admin AS "isAdmin",
+              is_dept_head AS "isDeptHead"
+      FROM users
+      WHERE email = $1`,
+      [email]
+    )
 
-    const user = result.rows[0];
+    const user = result.rows[0]
 
     if (user) {
       // compare hashed password to a new hash from password
-      const isValid = await bcrypt.compare(password, user.password);
+      const isValid = await bcrypt.compare(password, user.password)
       if (isValid === true) {
-        delete user.password;
-        return user;
+        delete user.password
+        return user
       }
     }
 
-    throw new UnauthorizedError("Invalid username/password");
+    throw new UnauthorizedError('Invalid username/password')
   }
 
   /** Register user with data.
    *
-   * Returns { username, firstName, lastName, email, isAdmin }
+   * Returns { firstName, lastName, email, isAdmin, isDeptHead }
    *
    * Throws BadRequestError on duplicates.
    **/
 
-  static async register(
-      { username, password, firstName, lastName, email, isAdmin }) {
+  static async register({
+    firstName,
+    lastName,
+    email,
+    password,
+    isAdmin,
+    isDeptHead,
+  }) {
     const duplicateCheck = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
+      `SELECT email
+      FROM users
+      WHERE email = $1`,
+      [email]
+    )
 
     if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
+      throw new BadRequestError(`A user with that email already exists.`)
     }
 
-    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR)
 
     const result = await db.query(
-          `INSERT INTO users
-           (username,
-            password,
-            first_name,
+      `INSERT INTO users
+           (first_name,
             last_name,
             email,
-            is_admin)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING username, first_name AS "firstName", last_name AS "lastName", email, is_admin AS "isAdmin"`,
-        [
-          username,
-          hashedPassword,
-          firstName,
-          lastName,
-          email,
-          isAdmin,
-        ],
-    );
+            password,
+            is_admin,
+            is_dept_head)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, first_name AS "firstName", last_name AS "lastName", email, is_admin AS "isAdmin", is_dept_head AS "isDeptHead"`,
+      [firstName, lastName, email, hashedPassword, isAdmin, isDeptHead]
+    )
 
-    const user = result.rows[0];
+    const user = result.rows[0]
 
-    return user;
+    return user
   }
 
   /** Find all users.
    *
-   * Returns [{ username, first_name, last_name, email, is_admin }, ...]
+   * Returns [{ first_name, last_name, email, isAdmin, isDeptHead }, ...]
    **/
 
   static async findAll() {
     const result = await db.query(
-          `SELECT username,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           ORDER BY username`,
-    );
+      `SELECT id,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              email,
+              is_admin AS "isAdmin",
+              is_dept_head AS "isDeptHead"
+      FROM users
+      ORDER BY lastName DESC, firstName`
+    )
 
-    return result.rows;
+    return result.rows
   }
 
-  /** Given a username, return data about user.
+  /** Find all users in given department.
    *
-   * Returns { username, first_name, last_name, is_admin, jobs }
-   *   where jobs is { id, title, company_handle, company_name, state }
+   * Returns [{ first_name, last_name, email, isAdmin, isDeptHead }, ...]
+   **/
+
+  static async findAllVolunteers(deptCode) {
+    const result = await db.query(
+      `SELECT u.id,
+              u.first_name AS "firstName",
+              u.last_name AS "lastName",
+              u.email,
+              u.is_admin AS "isAdmin",
+              u.is_dept_head AS "isDeptHead"
+      FROM users AS u
+      INNER JOIN dept_volunteers AS dv
+        ON dv.user_id = u.id
+      INNER JOIN departments AS d
+        ON d.code = dv.dept_code
+      WHERE d.code = $1
+      ORDER BY lastName DESC, firstName`,
+      [deptCode]
+    )
+
+    return result.rows
+  }
+
+  /** Given a users id, return data about user.
+   *
+   * Returns { id, first_name, last_name, email isAdmin, isDeptHead, positions }
+   *  where positions is [position.name]
    *
    * Throws NotFoundError if user not found.
    **/
 
-  static async get(username) {
+  static async get(id) {
     const userRes = await db.query(
-          `SELECT username,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
+      `SELECT id,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              email,
+              is_admin AS "isAdmin",
+              is_dept_head AS "isDeptHead"
+      FROM users
+      WHERE id = $1`,
+      [id]
+    )
 
-    const user = userRes.rows[0];
+    const user = userRes.rows[0]
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user: ${id}`)
 
-    const userApplicationsRes = await db.query(
-          `SELECT a.job_id
-           FROM applications AS a
-           WHERE a.username = $1`, [username]);
+    const userPositionsRes = await db.query(
+      `SELECT p.code, p.name
+      FROM positions AS p
+      INNER JOIN user_position AS up
+        ON up.position_code = p.code
+      INNER JOIN user AS u
+        ON u.id = up.user_id
+      WHERE id = $1`,
+      [id]
+    )
 
-    user.applications = userApplicationsRes.rows.map(a => a.job_id);
-    return user;
+    user.positions = userPositionsRes.rows.map((p) => p.name)
+    return user
   }
 
   /** Update user data with `data`.
@@ -154,90 +188,90 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { firstName, lastName, password, email, isAdmin }
+   *   { firstName, lastName, email }
    *
-   * Returns { username, firstName, lastName, email, isAdmin }
+   * Returns { firstName, lastName, email, isAdmin, isDeptHead }
    *
    * Throws NotFoundError if not found.
-   *
-   * WARNING: this function can set a new password or make a user an admin.
-   * Callers of this function must be certain they have validated inputs to this
-   * or a serious security risks are opened.
    */
 
-  static async update(username, data) {
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
-    }
+  static async update(id, data) {
+    if (data.password) delete data.password
+    if (data.isAdmin) delete data.isAdmin
+    if (data.isDeptHead) delete data.isDeptHead
 
-    const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          firstName: "first_name",
-          lastName: "last_name",
-          isAdmin: "is_admin",
-        });
-    const usernameVarIdx = "$" + (values.length + 1);
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      firstName: 'first_name',
+      lastName: 'last_name',
+    })
 
-    const querySql = `UPDATE users 
-                      SET ${setCols} 
-                      WHERE username = ${usernameVarIdx} 
-                      RETURNING username,
-                                first_name AS "firstName",
-                                last_name AS "lastName",
-                                email,
-                                is_admin AS "isAdmin"`;
-    const result = await db.query(querySql, [...values, username]);
-    const user = result.rows[0];
+    const user = updateUserQuery(id, setCols, values)
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    if (!user) throw new NotFoundError(`No user: ${id}`)
 
-    delete user.password;
-    return user;
+    return user
+  }
+
+  /** Update user's password
+   *
+   * Returns { firstName, lastName, email, isAdmin, isDeptHead }
+   * 
+   * Throws either NotFoundError (if user not found) or UnauthorizedError (if incorrect password)
+   */
+  static async updatePassword(id, password, newPassword) {
+    const userRes = await db.query(
+      `SELECT id, password
+       FROM users
+       WHERE id = $1`,
+      [id]
+    )
+    const user = userRes.rows[0]
+
+    if (!user) throw new NotFoundError(`No user: ${id}`)
+
+    const isValid = await bcrypt.compare(password, user.password)
+    if (isValid === false)
+      throw new UnauthorizedError('Invalid username/password')
+
+    const newPasswordHash = await bcrypt.hash(newPassword, BCRYPT_WORK_FACTOR)
+
+    const data = { password: newPasswordHash, needsNewPwd: false }
+
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      needsNewPwd: 'needs_new_pwd'
+    })
+
+    const updatedUser = updateUserQuery(id, setCols, values)
+
+    return updatedUser
+  }
+
+  /** Update user to be admin and/or department head */
+  static async updateUserToAdminOrDeptHead(id, data) {
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      isAdmin: 'is_admin',
+      isDeptHead: 'is_dept_head',
+    })
+    const user = updateUserQuery(id, setCols, values)
+
+    if (!user) throw new NotFoundError(`No user: ${id}`)
+
+    return user
   }
 
   /** Delete given user from database; returns undefined. */
 
-  static async remove(username) {
+  static async remove(id) {
     let result = await db.query(
-          `DELETE
-           FROM users
-           WHERE username = $1
-           RETURNING username`,
-        [username],
-    );
-    const user = result.rows[0];
+      `DELETE
+      FROM users
+      WHERE id = $1
+      RETURNING id`,
+      [id]
+    )
+    const user = result.rows[0]
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
-  }
-
-  /** Apply for job: update db, returns undefined.
-   *
-   * - username: username applying for job
-   * - jobId: job id
-   **/
-
-  static async applyToJob(username, jobId) {
-    const preCheck = await db.query(
-          `SELECT id
-           FROM jobs
-           WHERE id = $1`, [jobId]);
-    const job = preCheck.rows[0];
-
-    if (!job) throw new NotFoundError(`No job: ${jobId}`);
-
-    const preCheck2 = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`, [username]);
-    const user = preCheck2.rows[0];
-
-    if (!user) throw new NotFoundError(`No username: ${username}`);
-
-    await db.query(
-          `INSERT INTO applications (job_id, username)
-           VALUES ($1, $2)`,
-        [jobId, username]);
+    if (!user) throw new NotFoundError(`No user: ${id}`)
   }
 }
 
