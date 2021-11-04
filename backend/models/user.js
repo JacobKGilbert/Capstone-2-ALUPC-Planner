@@ -29,6 +29,7 @@ class User {
               last_name AS "lastName",
               email,
               password,
+              needs_new_pwd AS needsNewPwd,
               is_admin AS "isAdmin",
               is_dept_head AS "isDeptHead"
       FROM users
@@ -87,7 +88,7 @@ class User {
             is_admin,
             is_dept_head)
       VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, first_name AS "firstName", last_name AS "lastName", email, is_admin AS "isAdmin", is_dept_head AS "isDeptHead"`,
+      RETURNING id, first_name AS "firstName", last_name AS "lastName", email, needs_new_pwd AS needsNewPwd, is_admin AS "isAdmin", is_dept_head AS "isDeptHead"`,
       [firstName, lastName, email, hashedPassword, isAdmin, isDeptHead]
     )
 
