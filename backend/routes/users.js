@@ -44,7 +44,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 });
 
 
-/** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
+/** GET / => { users: [ {firstName, lastName, email, needsNewPwd, isAdmin, isDeptHead }, ... ] }
  *
  * Returns list of all users.
  *
@@ -61,17 +61,17 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 });
 
 
-/** GET /[username] => { user }
+/** GET /[id] => { user }
  *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
+ * Returns { firstName, lastName, needsNewPwd, isAdmin, isDeptHead, positions }
+ *   where positions is [position.name]
  *
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    const user = await User.get(req.params.username);
+    const user = await User.get(req.params.id);
     return res.json({ user });
   } catch (err) {
     return next(err);
