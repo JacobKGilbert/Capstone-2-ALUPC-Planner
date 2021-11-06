@@ -10,8 +10,7 @@ function createToken(user) {
       "createToken passed user without isDeptHead property");
 
   let payload = {
-    firstName: user.firstName,
-    lastName: user.lastName,
+    id: user.id,
     isAdmin: user.isAdmin || false,
     isDeptHead: user.isDeptHead || false,
   };
