@@ -108,6 +108,7 @@ class User {
               first_name AS "firstName",
               last_name AS "lastName",
               email,
+              needs_new_pwd AS "needsNewPwd",
               is_admin AS "isAdmin",
               is_dept_head AS "isDeptHead"
       FROM users
@@ -157,6 +158,7 @@ class User {
               first_name AS "firstName",
               last_name AS "lastName",
               email,
+              needs_new_pwd AS "needsNewPwd",
               is_admin AS "isAdmin",
               is_dept_head AS "isDeptHead"
       FROM users
@@ -214,6 +216,10 @@ class User {
   }
 
   /** Update user's password
+   * 
+   * This method should only be used to change from a known password to a new one. 
+   * 
+   * DO NOT use if original password is "forgotten".
    *
    * Returns { firstName, lastName, email, isAdmin, isDeptHead }
    * 
