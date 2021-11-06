@@ -2,6 +2,8 @@
 
 ## Admin
 ### User
+- [x] Get all users
+- [x] Get single user info
 - [ ] Add/Update/Delete User
 - [ ] Add/Delete Unavailable for User
 - [ ] Add/Delete User from Department (dept_volunteers)
@@ -32,5 +34,6 @@ ___
 ___
 ## User
 ### User
+- [x] Get own info
 - [ ] Update User
 - [ ] Add/Delete Unavailable for User
