@@ -66,7 +66,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  * Returns { firstName, lastName, needsNewPwd, isAdmin, isDeptHead, positions }
  *   where positions is [position.name]
  *
- * Authorization required: admin or same user-as-:username
+ * Authorization required: admin or same user-as-:id
  **/
 
 router.get("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
@@ -104,16 +104,39 @@ router.patch("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
   }
 });
 
+/** PATCH /[id]/password {user} => {user} 
+ * 
+ * Data can include { password, newPassword }
+ * 
+ * Returns { id, firstName, lastName, email, isAdmin, isDeptHead }
+ * 
+ * Authorization required: admin or same-user-as-:id
+*/
+router.patch("/:id/password", ensureCorrectUserOrAdmin, async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, userUpdateSchema)
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack)
+      throw new BadRequestError(errs)
+    }
 
-/** DELETE /[username]  =>  { deleted: username }
+    const user = await User.updatePassword(req.params.id, req.body)
+    return res.json({ user })
+  } catch (err) {
+    return next(err)
+  }
+})
+
+
+/** DELETE /[id]  =>  { deleted: id }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin
  **/
 
-router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
   try {
-    await User.remove(req.params.username);
-    return res.json({ deleted: req.params.username });
+    await User.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
   } catch (err) {
     return next(err);
   }
