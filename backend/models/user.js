@@ -225,7 +225,9 @@ class User {
    * 
    * Throws either NotFoundError (if user not found) or UnauthorizedError (if incorrect password)
    */
-  static async updatePassword(id, password, newPassword) {
+  static async updatePassword(id, data) {
+    const { password, newPassword } = data
+
     const userRes = await db.query(
       `SELECT id, password
        FROM users
