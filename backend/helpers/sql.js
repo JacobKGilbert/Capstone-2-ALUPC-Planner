@@ -33,7 +33,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-function updateUserQuery(id, setCols, values) {
+async function updateUserQuery(id, setCols, values) {
   const userIdVarIdx = '$' + (values.length + 1)
 
   const querySql = `UPDATE users 
@@ -50,4 +50,34 @@ function updateUserQuery(id, setCols, values) {
   return user
 }
 
-module.exports = { sqlForPartialUpdate, updateUserQuery };
+async function getPositions(id) {
+  const userPositionsRes = await db.query(
+    `SELECT p.code, p.name
+     FROM positions AS p
+     INNER JOIN user_position AS up
+        ON up.position_code = p.code
+     INNER JOIN user AS u
+        ON u.id = up.user_id
+     WHERE id = $1`,
+    [id]
+  )
+  
+  const positions = userPositionsRes.rows.map((p) => p.name) || []
+
+  return positions
+}
+
+async function getUnavailable(id) {
+  const userUnavailableRes = await db.query(
+    `SELECT id, date
+     FROM unavailable
+     WHERE user_id = $1`,
+    [userId]
+  )
+
+  const unavailable = userUnavailableRes.rows.map((u) => u.date) || []
+
+  return unavailable
+}
+
+module.exports = { sqlForPartialUpdate, updateUserQuery, getPositions, getUnavailable };
