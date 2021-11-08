@@ -4,7 +4,7 @@
 ### User
 - [x] Get all users
 - [x] Get single user info
-- [ ] Add/Update/Delete User
+- [x] Add/Update/Delete User
 - [ ] Add/Delete Unavailable for User
 - [ ] Add/Delete User from Department (dept_volunteers)
 - [ ] Add/Delete User from Event (events_volunteers)
@@ -35,5 +35,5 @@ ___
 ## User
 ### User
 - [x] Get own info
-- [ ] Update User
+- [x] Update User
 - [ ] Add/Delete Unavailable for User
