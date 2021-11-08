@@ -8,6 +8,11 @@
       "minLength": 5,
       "maxLength": 20
     },
+    "newPassword": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 20
+    },
     "firstName": {
       "type": "string",
       "minLength": 1,
