@@ -104,6 +104,22 @@ router.patch("/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
   }
 });
 
+
+/** DELETE /[id]  =>  { deleted: id }
+ *
+ * Authorization required: admin
+ **/
+
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
+  try {
+    await User.remove(req.params.id);
+    return res.json({ deleted: req.params.id });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
 /** PATCH /[id]/password {user} => {user} 
  * 
  * Data can include { password, newPassword }
@@ -127,6 +143,7 @@ router.patch("/:id/password", ensureCorrectUserOrAdmin, async function (req, res
   }
 })
 
+
 /** PATCH /[id]/auth {user} => {user}
  * 
  * Data can include { isAdmin [boolean], isDeptHead [boolean] }
@@ -146,37 +163,24 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
   }
 })
 
-/** DELETE /[id]  =>  { deleted: id }
- *
- * Authorization required: admin
- **/
 
-router.delete("/:id", ensureAdmin, async function (req, res, next) {
+router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    await User.remove(req.params.id);
-    return res.json({ deleted: req.params.id });
+    
   } catch (err) {
-    return next(err);
+    return next(err)
   }
-});
+})
 
 
-/** POST /[username]/jobs/[id]  { state } => { application }
- *
- * Returns {"applied": jobId}
- *
- * Authorization required: admin or same-user-as-:username
- * */
+router.delete('/:id/unavailable', ensureCorrectUserOrAdmin, async function (req, res, next) {
+    try {
 
-router.post("/:username/jobs/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
-  try {
-    const jobId = +req.params.id;
-    await User.applyToJob(req.params.username, jobId);
-    return res.json({ applied: jobId });
-  } catch (err) {
-    return next(err);
+    } catch (err) {
+      return next(err)
+    }
   }
-});
+)
 
 
 module.exports = router;
