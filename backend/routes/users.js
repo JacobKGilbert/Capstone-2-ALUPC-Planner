@@ -127,6 +127,24 @@ router.patch("/:id/password", ensureCorrectUserOrAdmin, async function (req, res
   }
 })
 
+/** PATCH /[id]/auth {user} => {user}
+ * 
+ * Data can include { isAdmin [boolean], isDeptHead [boolean] }
+ */
+router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, userUpdateSchema)
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack)
+      throw new BadRequestError(errs)
+    }
+
+    const user = await User.updateUserToAdminOrDeptHead(req.params.id, req.body)
+    return res.json({ user })
+  } catch (err) {
+    return next(err)
+  }
+})
 
 /** DELETE /[id]  =>  { deleted: id }
  *
