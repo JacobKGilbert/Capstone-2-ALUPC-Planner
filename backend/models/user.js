@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const { sqlForPartialUpdate, updateUserQuery } = require("../helpers/sql");
+const { sqlForPartialUpdate, updateUserQuery, getPositions, getUnavailable } = require("../helpers/sql");
 const {
   NotFoundError,
   BadRequestError,
@@ -120,7 +120,7 @@ class User {
 
   /** Find all users in given department.
    *
-   * Returns [{ first_name, last_name, email, isAdmin, isDeptHead }, ...]
+   * Returns [{ id, first_name, last_name, email, isAdmin, isDeptHead }, ...]
    **/
 
   static async findAllVolunteers(deptCode) {
@@ -140,6 +140,14 @@ class User {
       ORDER BY lastName DESC, firstName`,
       [deptCode]
     )
+
+    for (const row of result.rows) {
+      const userId = row.id
+
+      row.positions = await getPositions(userId)
+
+      row.unavailable = await getUnavailable(userId)
+    }
 
     return result.rows
   }
@@ -170,18 +178,10 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${id}`)
 
-    const userPositionsRes = await db.query(
-      `SELECT p.code, p.name
-      FROM positions AS p
-      INNER JOIN user_position AS up
-        ON up.position_code = p.code
-      INNER JOIN user AS u
-        ON u.id = up.user_id
-      WHERE id = $1`,
-      [id]
-    )
+    user.positions = await getPositions(id)
 
-    user.positions = userPositionsRes.rows.map((p) => p.name)
+    user.unavailable = await getUnavailable(id)
+
     return user
   }
 
