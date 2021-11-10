@@ -1,6 +1,6 @@
 INSERT INTO users (id, first_name, last_name, email, password, is_admin)
-VALUES
-(1, Jacob, Gilbert, 'jacobkgilbert@protonmail.com', 'jacob_password', true);
+VALUES 
+(1, 'Jacob', 'Gilbert', 'jacobkgilbert@protonmail.com', 'jacob_password', true);
 
 INSERT INTO departments (code, name)
 VALUES
@@ -27,7 +27,7 @@ VALUES
 ('pno', 'Piano'),
 ('org', 'Organ'),
 ('drm', 'Drums'),
-('tmb', 'Trombone')
+('tmb', 'Trombone'),
 ('soc', 'Social'),
 ('web', 'Website'),
 ('opr', 'Operator');

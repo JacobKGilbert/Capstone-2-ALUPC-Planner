@@ -18,7 +18,7 @@ CREATE TABLE "departments" (
 
 
 CREATE TABLE "dept_volunteers" (
-  "dept_code" int, 
+  "dept_code" text, 
   "user_id" int, 
   PRIMARY KEY ("dept_code", "user_id")
 );
@@ -27,7 +27,7 @@ CREATE TABLE "dept_volunteers" (
 CREATE TABLE "events" (
   "id" int PRIMARY KEY,
   "date" date NOT NULL,
-  "dept_code" int NOT NULL
+  "dept_code" text NOT NULL
 );
 
 
