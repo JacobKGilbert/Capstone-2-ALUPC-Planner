@@ -1,0 +1,26 @@
+{
+  "$id": "http://example.com/example.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "default": {},
+  "description": "The root schema comprises the entire JSON document.",
+  "examples": [
+    {
+      "date": "2022-05-16"
+    }
+  ],
+  "required": ["date"],
+  "title": "The root schema",
+  "type": "object",
+  "properties": {
+    "date": {
+      "$id": "#/properties/date",
+      "default": "",
+      "description": "Date in YYYY-MM-DD format.",
+      "examples": ["2022-05-16"],
+      "title": "The date schema",
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "additionalProperties": false
+}
