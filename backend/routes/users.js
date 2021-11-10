@@ -11,6 +11,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const unavailableSchema = require("../schemas/unavailable.json")
 
 const router = express.Router();
 
@@ -166,16 +167,24 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
 
 router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    
+    const validator = jsonschema.validate(req.body, unavailableSchema)
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack)
+      throw new BadRequestError(errs)
+    }
+
+    await User.makeUnavailable(req.params.id, req.body.date)
+    return res.status(201).json({ msg: "Successfully made unavailable."})
   } catch (err) {
     return next(err)
   }
 })
 
 
-router.delete('/:id/unavailable', ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete('/:id/unavailable/:unvlId', ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
-
+      await User.makeAvailable(req.params.unvlId)
+      return res.status(201).json({ msg: 'Successfully made available.' })
     } catch (err) {
       return next(err)
     }
