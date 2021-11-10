@@ -1,5 +1,5 @@
 CREATE TABLE "users" ( 
-  "id" int PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "first_name" text NOT NULL,
   "last_name" text NOT NULL, 
   "email" text UNIQUE NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE "dept_volunteers" (
 
 
 CREATE TABLE "events" (
-  "id" int PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "date" date NOT NULL,
   "dept_code" text NOT NULL
 );
@@ -46,7 +46,7 @@ CREATE TABLE "events_volunteers" (
 
 
 CREATE TABLE "unavailable" (
-  "id" int PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "date" date NOT NULL,
   "user_id" int NOT NULL
 );
