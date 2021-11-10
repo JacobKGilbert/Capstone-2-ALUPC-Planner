@@ -216,13 +216,13 @@ class User {
   }
 
   /** Update user's password
-   * 
-   * This method should only be used to change from a known password to a new one. 
-   * 
+   *
+   * This method should only be used to change from a known password to a new one.
+   *
    * DO NOT use if original password is "forgotten".
    *
    * Returns { firstName, lastName, email, isAdmin, isDeptHead }
-   * 
+   *
    * Throws either NotFoundError (if user not found) or UnauthorizedError (if incorrect password)
    */
   static async updatePassword(id, data) {
@@ -247,7 +247,7 @@ class User {
     const data = { password: newPasswordHash, needsNewPwd: false }
 
     const { setCols, values } = sqlForPartialUpdate(data, {
-      needsNewPwd: 'needs_new_pwd'
+      needsNewPwd: 'needs_new_pwd',
     })
 
     const updatedUser = updateUserQuery(id, setCols, values)
@@ -268,8 +268,32 @@ class User {
     return user
   }
 
-  /** Delete given user from database; returns undefined. */
+  /** Set user as unavailable. */
+  static async makeUnavailable(id, date) {
+    let result = await db.query(
+      `INSERT INTO unavailable
+       (date, user_id)
+       VALUES ($1, $2)
+       RETURNING id
+      `,
+      [date, id]
+    )
+    return result.rows
+  }
 
+  /** Set user as unavailable. */
+  static async makeAvailable(id) {
+    let result = await db.query(
+      `DELETE FROM unavailable
+       WHERE id = $1
+       RETURNING id
+      `,
+      [id]
+    )
+    return result.rows
+  }
+
+  /** Delete given user from database; returns undefined. */
   static async remove(id) {
     let result = await db.query(
       `DELETE
