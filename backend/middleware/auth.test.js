@@ -68,8 +68,7 @@ describe("ensureLoggedIn", function () {
     const res = {
       locals: {
         user: {
-          firstName: 'test',
-          lastName: 'name',
+          id: 1,
           isAdmin: false,
           isDeptHead: false,
         },
@@ -100,8 +99,7 @@ describe("ensureAdmin", function () {
     const res = {
       locals: {
         user: {
-          firstName: 'test',
-          lastName: 'name',
+          id: 1,
           isAdmin: true,
           isDeptHead: false,
         },
@@ -119,8 +117,7 @@ describe("ensureAdmin", function () {
     const res = {
       locals: {
         user: {
-          firstName: 'test',
-          lastName: 'name',
+          id: 1,
           isAdmin: false,
           isDeptHead: false,
         },
@@ -147,8 +144,8 @@ describe("ensureAdmin", function () {
 describe("ensureCorrectUserOrAdmin", function () {
   test("works: admin", function () {
     expect.assertions(1);
-    const req = { params: { firstName: "test", lastName: "name" } };
-    const res = { locals: { user: { firstName: "admin", lastName: "user", isAdmin: true } } };
+    const req = { params: { id: 0 } };
+    const res = { locals: { user: { id: 1, isAdmin: true } } };
     const next = function (err) {
       expect(err).toBeFalsy();
     };
@@ -157,9 +154,9 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("works: same user", function () {
     expect.assertions(1);
-    const req = { params: { firstName: 'test', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = {
-      locals: { user: { firstName: 'test', lastName: 'name', isAdmin: false } },
+      locals: { user: { id: 1, isAdmin: false } },
     }
     const next = function (err) {
       expect(err).toBeFalsy();
@@ -167,23 +164,11 @@ describe("ensureCorrectUserOrAdmin", function () {
     ensureCorrectUserOrAdmin(req, res, next);
   });
 
-  test("unauth: mismatch: wrong firstName", function () {
+  test("unauth: wrong id", function () {
     expect.assertions(1);
-    const req = { params: { firstName: 'wrong', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = {
-      locals: { user: { firstName: 'test', lastName: 'name', isAdmin: false } },
-    }
-    const next = function (err) {
-      expect(err instanceof UnauthorizedError).toBeTruthy();
-    };
-    ensureCorrectUserOrAdmin(req, res, next);
-  });
-
-  test("unauth: mismatch: wrong lastName", function () {
-    expect.assertions(1);
-    const req = { params: { firstName: 'test', lastName: 'wrong' } }
-    const res = {
-      locals: { user: { firstName: 'test', lastName: 'name', isAdmin: false } },
+      locals: { user: { id: 2, isAdmin: false, isDeptHead: false } },
     }
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
@@ -193,7 +178,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: if anon", function () {
     expect.assertions(1);
-    const req = { params: { firstName: 'test', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = { locals: {} };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
@@ -205,9 +190,9 @@ describe("ensureCorrectUserOrAdmin", function () {
 describe('ensureDeptHeadOrAdmin', function () {
   test('works: admin', function () {
     expect.assertions(1)
-    const req = { params: { firstName: 'test', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = {
-      locals: { user: { firstName: 'admin', lastName: 'user', isAdmin: true, isDeptHead: false } },
+      locals: { user: { id: 0, isAdmin: true, isDeptHead: false } },
     }
     const next = function (err) {
       expect(err).toBeFalsy()
@@ -217,9 +202,9 @@ describe('ensureDeptHeadOrAdmin', function () {
 
   test('works: department head', function () {
     expect.assertions(1)
-    const req = { params: { firstName: 'test', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = {
-      locals: { user: { firstName: 'deptHead', lastName: 'user', isAdmin: false, isDeptHead: true } },
+      locals: { user: { id: 0, isAdmin: false, isDeptHead: true } },
     }
     const next = function (err) {
       expect(err).toBeFalsy()
@@ -229,7 +214,7 @@ describe('ensureDeptHeadOrAdmin', function () {
 
   test('unauth: if anon', function () {
     expect.assertions(1)
-    const req = { params: { firstName: 'test', lastName: 'name' } }
+    const req = { params: { id: 1 } }
     const res = { locals: {} }
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy()
