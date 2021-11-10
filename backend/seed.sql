@@ -27,6 +27,7 @@ VALUES
 ('pno', 'Piano'),
 ('org', 'Organ'),
 ('drm', 'Drums'),
+('tmb', 'Trombone')
 ('soc', 'Social'),
 ('web', 'Website'),
 ('opr', 'Operator');
