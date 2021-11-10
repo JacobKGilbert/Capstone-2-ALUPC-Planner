@@ -1,18 +1,18 @@
-\echo 'Delete and recreate jobly db?' 
+\echo 'Delete and recreate church_planner db?' 
 \prompt 'Return for yes or control-C to cancel > ' foo
 
-DROP DATABASE alupc_planner;
-CREATE DATABASE alupc_planner;
-\connect alupc_planner 
+DROP DATABASE church_planner;
+CREATE DATABASE church_planner;
+\connect church_planner 
 
 \i schema.sql
 \i seed.sql
 
-\echo 'Delete and recreate jobly_test db?' 
+\echo 'Delete and recreate church_planner_test db?' 
 \prompt 'Return for yes or control-C to cancel > ' foo
 
-DROP DATABASE alupc_planner_test;
-CREATE DATABASE alupc_planner_test;
-\connect alupc_planner_test 
+DROP DATABASE church_planner_test;
+CREATE DATABASE church_planner_test;
+\connect church_planner_test 
 
 \i schema.sql
