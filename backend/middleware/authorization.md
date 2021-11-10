@@ -5,7 +5,7 @@
 - [x] Get all users
 - [x] Get single user info
 - [x] Add/Update/Delete User
-- [ ] Add/Delete Unavailable for User
+- [x] Add/Delete Unavailable for User
 
 ### Department
 - [ ] Add/Update/Delete Department
@@ -38,4 +38,4 @@ ___
 ### User
 - [x] Get own info
 - [x] Update User
-- [ ] Add/Delete Unavailable for User
+- [x] Add/Delete Unavailable for User
