@@ -56,7 +56,7 @@ async function getPositions(id) {
      FROM positions AS p
      INNER JOIN user_position AS up
         ON up.position_code = p.code
-     INNER JOIN user AS u
+     INNER JOIN users AS u
         ON u.id = up.user_id
      WHERE id = $1`,
     [id]
@@ -72,7 +72,7 @@ async function getUnavailable(id) {
     `SELECT id, date
      FROM unavailable
      WHERE user_id = $1`,
-    [userId]
+    [id]
   )
 
   const unavailable = userUnavailableRes.rows.map((u) => u.date) || []
