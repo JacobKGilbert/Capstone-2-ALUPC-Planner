@@ -29,7 +29,7 @@ class User {
               last_name AS "lastName",
               email,
               password,
-              needs_new_pwd AS needsNewPwd,
+              needs_new_pwd AS "needsNewPwd",
               is_admin AS "isAdmin",
               is_dept_head AS "isDeptHead"
       FROM users
@@ -88,7 +88,13 @@ class User {
             is_admin,
             is_dept_head)
       VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, first_name AS "firstName", last_name AS "lastName", email, needs_new_pwd AS needsNewPwd, is_admin AS "isAdmin", is_dept_head AS "isDeptHead"`,
+      RETURNING id, 
+                first_name AS "firstName", 
+                last_name AS "lastName", 
+                email, 
+                needs_new_pwd AS "needsNewPwd", 
+                is_admin AS "isAdmin", 
+                is_dept_head AS "isDeptHead"`,
       [firstName, lastName, email, hashedPassword, isAdmin, isDeptHead]
     )
 
@@ -112,7 +118,7 @@ class User {
               is_admin AS "isAdmin",
               is_dept_head AS "isDeptHead"
       FROM users
-      ORDER BY lastName DESC, firstName`
+      ORDER BY last_name, first_name`
     )
 
     return result.rows
@@ -208,9 +214,7 @@ class User {
       lastName: 'last_name',
     })
 
-    const user = updateUserQuery(id, setCols, values)
-
-    if (!user) throw new NotFoundError(`No user: ${id}`)
+    const user = await updateUserQuery(id, setCols, values)
 
     return user
   }
@@ -244,9 +248,9 @@ class User {
 
     const newPasswordHash = await bcrypt.hash(newPassword, BCRYPT_WORK_FACTOR)
 
-    const data = { password: newPasswordHash, needsNewPwd: false }
+    const newData = { password: newPasswordHash, needsNewPwd: false }
 
-    const { setCols, values } = sqlForPartialUpdate(data, {
+    const { setCols, values } = sqlForPartialUpdate(newData, {
       needsNewPwd: 'needs_new_pwd',
     })
 
