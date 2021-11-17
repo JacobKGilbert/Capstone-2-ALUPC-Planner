@@ -1,4 +1,4 @@
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, NotFoundError } = require("../expressError");
 const db = require("../db");
 
 /**
@@ -43,10 +43,14 @@ async function updateUserQuery(id, setCols, values) {
                               first_name AS "firstName",
                               last_name AS "lastName",
                               email,
+                              needs_new_pwd AS "needsNewPwd",
                               is_admin AS "isAdmin",
                               is_dept_head AS "isDeptHead"`
   const result = await db.query(querySql, [...values, id])
   const user = result.rows[0]
+
+  if (!user) throw new NotFoundError(`No user: ${id}`)
+
   return user
 }
 
