@@ -1,5 +1,5 @@
 CREATE TABLE "users" ( 
-  "id" SERIAL PRIMARY KEY,
+  "id" INT PRIMARY KEY NOT NULL,
   "first_name" text NOT NULL,
   "last_name" text NOT NULL, 
   "email" text UNIQUE NOT NULL,
@@ -108,3 +108,4 @@ ALTER TABLE "user_position" ADD
 FOREIGN KEY ("position_code") REFERENCES "positions" ("code") ON
 DELETE CASCADE;
 
+ALTER TABLE "users" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY;
