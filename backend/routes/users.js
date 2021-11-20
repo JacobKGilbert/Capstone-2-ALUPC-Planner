@@ -5,7 +5,7 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
+const { ensureCorrectUserOrAdmin, ensureAdmin, ensureDeptHeadOrAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
@@ -164,6 +164,14 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
   }
 })
 
+router.get("/:id/unavailable", ensureDeptHeadOrAdmin, async function (req, res, next) {
+  try {
+    const unavailableDates = await User.getUnavailable(req.params.id)
+    return res.json({ unavailableDates })
+  } catch (err) {
+    return next(err)
+  }
+})
 
 router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
