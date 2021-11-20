@@ -231,6 +231,9 @@ class User {
    */
   static async updatePassword(id, data) {
     const { password, newPassword } = data
+    if (!password) throw new BadRequestError('Invalid Data')
+    if (!newPassword || newPassword.length === 0) 
+      throw new BadRequestError('Invalid Data')
 
     const userRes = await db.query(
       `SELECT id, password
@@ -265,7 +268,7 @@ class User {
       isAdmin: 'is_admin',
       isDeptHead: 'is_dept_head',
     })
-    const user = updateUserQuery(id, setCols, values)
+    const user = await updateUserQuery(id, setCols, values)
 
     if (!user) throw new NotFoundError(`No user: ${id}`)
 
@@ -273,19 +276,19 @@ class User {
   }
 
   /** Set user as unavailable. */
-  static async makeUnavailable(id, date) {
+  static async makeUnavailable(userId, date) {
     let result = await db.query(
       `INSERT INTO unavailable
        (date, user_id)
        VALUES ($1, $2)
        RETURNING id
       `,
-      [date, id]
+      [date, userId]
     )
-    return result.rows
+    return result.rows[0]
   }
 
-  /** Set user as unavailable. */
+  /** Set user as available. */
   static async makeAvailable(id) {
     let result = await db.query(
       `DELETE FROM unavailable
@@ -293,6 +296,17 @@ class User {
        RETURNING id
       `,
       [id]
+    )
+    return result.rows[0]
+  }
+
+  /** Get user's unavailable dates */
+  static async getUnavailable(userId) {
+    let result = await db.query(
+      `SELECT id, date
+       FROM unavailable
+       WHERE user_id = $1`,
+      [userId]
     )
     return result.rows
   }
