@@ -46,7 +46,7 @@ CREATE TABLE "events_volunteers" (
 
 
 CREATE TABLE "unavailable" (
-  "id" SERIAL PRIMARY KEY,
+  "id" INT PRIMARY KEY NOT NULL,
   "date" date NOT NULL,
   "user_id" int NOT NULL
 );
@@ -109,3 +109,4 @@ FOREIGN KEY ("position_code") REFERENCES "positions" ("code") ON
 DELETE CASCADE;
 
 ALTER TABLE "users" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY;
+ALTER TABLE "unavailable" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY;
