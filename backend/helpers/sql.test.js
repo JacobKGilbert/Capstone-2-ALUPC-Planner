@@ -1,6 +1,7 @@
-
+const db = require('../db');
 const { sqlForPartialUpdate } = require("./sql");
 
+afterAll(async () => await db.end())
 
 describe("sqlForPartialUpdate", function () {
   test("works: 1 item", function () {
