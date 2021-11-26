@@ -300,17 +300,6 @@ class User {
     return result.rows[0]
   }
 
-  /** Get user's unavailable dates */
-  static async getUnavailable(userId) {
-    let result = await db.query(
-      `SELECT id, date
-       FROM unavailable
-       WHERE user_id = $1`,
-      [userId]
-    )
-    return result.rows
-  }
-
   /** Delete given user from database; returns undefined. */
   static async remove(id) {
     let result = await db.query(
