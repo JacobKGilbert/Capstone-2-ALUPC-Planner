@@ -36,7 +36,7 @@ describe("createToken", function () {
     })
   });
 
-  test("works: default no admin", function () {
+  test("works: default not admin/deptHead", function () {
     // given the security risk if this didn't work, checking this specifically
     const token = createToken({ id: 1 })
     const payload = jwt.verify(token, SECRET_KEY);
