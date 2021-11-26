@@ -257,7 +257,7 @@ describe("GET /users/:id", function () {
   });
 });
 
-/************************************** PATCH /users/:username */
+/************************************** PATCH /users/:id */
 
 describe("PATCH /users/:id", () => {
   test("works for admins", async function () {
@@ -340,7 +340,7 @@ describe("PATCH /users/:id", () => {
   });
 });
 
-/************************************** DELETE /users/:username */
+/************************************** DELETE /users/:id */
 
 describe("DELETE /users/:id", function () {
   test("works for admin", async function () {
@@ -592,5 +592,49 @@ describe('POST /users/:id/unavailable', function () {
       .send({ date: 2 })
       .set('authorization', `Bearer ${adminToken}`)
     expect(resp.statusCode).toEqual(400)
+  })
+})
+
+/************************************** DELETE /users/:id/unavailable/:unvlId */
+
+describe('DELETE /users/:id/unavailable/:unvlId', function () {
+  test('works: for admin', async function () {
+    const resp = await request(app)
+      .delete(`/users/1/unavailable/1`)
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({ msg: 'Successfully made available.' })
+  })
+
+  test('works: for user', async function () {
+    const resp = await request(app)
+      .delete(`/users/1/unavailable/1`)
+      .set('authorization', `Bearer ${u1Token}`)
+    expect(resp.body).toEqual({ msg: 'Successfully made available.' })
+  })
+
+  test('unauth if incorrect user', async function () {
+    const resp = await request(app)
+      .delete(`/users/1/unavailable/1`)
+      .set('authorization', `Bearer ${u2Token}`)
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test('unauth for anon', async function () {
+    const resp = await request(app).delete(`/users/1/unavailable/1`)
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test('not found if user missing', async function () {
+    const resp = await request(app)
+      .delete(`/users/0/unavailable/1`)
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(404)
+  })
+
+  test('not found if unavailable missing', async function () {
+    const resp = await request(app)
+      .delete(`/users/1/unavailable/0`)
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(404)
   })
 })
