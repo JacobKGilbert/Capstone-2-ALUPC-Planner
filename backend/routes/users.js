@@ -5,8 +5,8 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin, ensureDeptHeadOrAdmin } = require("../middleware/auth");
-const { BadRequestError } = require("../expressError");
+const { ensureCorrectUserOrAdmin, ensureAdmin, } = require("../middleware/auth");
+const { BadRequestError, NotFoundError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
@@ -184,9 +184,15 @@ router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, r
   }
 })
 
-
+/** DELETE /[id]/unavailable/[unvlId]
+ * 
+ * Throws errors if user or unavailable id not found
+ */
 router.delete('/:id/unavailable/:unvlId', ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
+      const user = await User.get(req.params.id)
+      if (!user) throw new NotFoundError(`No user: ${req.params.id}`)
+
       await User.makeAvailable(req.params.unvlId)
       return res.status(201).json({ msg: 'Successfully made available.' })
     } catch (err) {
