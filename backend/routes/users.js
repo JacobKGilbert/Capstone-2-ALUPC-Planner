@@ -164,6 +164,11 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
   }
 })
 
+/** POST /[id]/unavailable
+ * 
+ * Data must include { date [string] } it must be in YYYY-MM-DD format.
+ * (To accomplish this, in javascript, use '.toISOString().split('T')[0]' after )
+ */
 router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, unavailableSchema)
