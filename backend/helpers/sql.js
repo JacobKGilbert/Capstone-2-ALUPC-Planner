@@ -79,7 +79,11 @@ async function getUnavailable(id) {
     [id]
   )
 
-  const unavailable = userUnavailableRes.rows.map((u) => u.date) || []
+  const unavailable = userUnavailableRes.rows.map(
+      (u) => {
+        const formattedDate = u.date.toISOString().split('T')[0]
+        return {id: u.id, date: formattedDate}
+      }) || []
 
   return unavailable
 }
