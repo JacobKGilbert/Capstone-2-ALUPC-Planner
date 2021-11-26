@@ -376,3 +376,123 @@ describe("DELETE /users/:id", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+
+/************************************** PATCH /users/:id/password */
+
+describe('PATCH /users/:id/password', function () {
+  test('works: for admin', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'password1',
+        newPassword: 'newPassword1'
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({
+      user: {
+        id: 1,
+        firstName: 'U1F',
+        lastName: 'U1L',
+        email: 'user1@user.com',
+        needsNewPwd: false,
+        isAdmin: false,
+        isDeptHead: false,
+      },
+    })
+  })
+
+  test('works: for correct user', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'password1',
+        newPassword: 'newPassword1',
+      })
+      .set('authorization', `Bearer ${u1Token}`)
+    expect(resp.body).toEqual({
+      user: {
+        id: 1,
+        firstName: 'U1F',
+        lastName: 'U1L',
+        email: 'user1@user.com',
+        needsNewPwd: false,
+        isAdmin: false,
+        isDeptHead: false,
+      },
+    })
+  })
+
+  test('unauth if incorrect user', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'password1',
+        newPassword: 'newPassword1',
+      })
+      .set('authorization', `Bearer ${u2Token}`)
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test('unauth if incorrect password', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'wrongPassword',
+        newPassword: 'newPassword1',
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+        .patch(`/users/1/password`)
+        .send({
+          password: 'password1',
+          newPassword: 'newPassword1',
+        });
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found if no such user", async function () {
+    const resp = await request(app)
+        .patch(`/users/0/password`)
+        .send({
+          password: 'password1',
+          newPassword: 'newPassword1',
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("bad request if missing password", async function () {
+    const resp = await request(app)
+        .patch(`/users/1/password`)
+        .send({
+          newPassword: 'newPassword1',
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  })
+
+  test('bad request if missing newPassword', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'password1',
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(400)
+  })
+
+  test('bad request if empty newPassword', async function () {
+    const resp = await request(app)
+      .patch(`/users/1/password`)
+      .send({
+        password: 'password1',
+        newPassword: ''
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(400)
+  })
+})
