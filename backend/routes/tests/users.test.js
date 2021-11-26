@@ -14,6 +14,7 @@ const {
   u1Token,
   u2Token,
   adminToken,
+  deptHeadToken
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -492,6 +493,103 @@ describe('PATCH /users/:id/password', function () {
         password: 'password1',
         newPassword: ''
       })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(400)
+  })
+})
+
+/************************************** POST /users/:id/unavailable */
+
+describe('POST /users/:id/unavailable', function () {
+  const date = new Date(2022, 6, 16).toISOString().split('T')[0]
+
+  test('works: for admin', async function () {
+    const resp = await request(app)
+      .post(`/users/1/unavailable`)
+      .send({ date })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({ msg: "Successfully made unavailable."})
+
+    const user = await User.get(1)
+    expect(user).toEqual({
+      id: 1,
+      firstName: 'U1F',
+      lastName: 'U1L',
+      email: 'user1@user.com',
+      needsNewPwd: true,
+      isAdmin: false,
+      isDeptHead: false,
+      positions: expect.any(Array),
+      unavailable: [
+        {
+          id: 1,
+          date: '2022-07-15'
+        },
+        {
+          id: 2,
+          date: '2022-07-16'
+        }
+      ]
+    })
+  })
+
+  test('works: for correct user', async function () {
+    const resp = await request(app)
+      .post(`/users/1/unavailable`)
+      .send({ date })
+      .set('authorization', `Bearer ${u1Token}`)
+    expect(resp.body).toEqual({ msg: 'Successfully made unavailable.' })
+
+    const user = await User.get(1)
+    expect(user).toEqual({
+      id: 1,
+      firstName: 'U1F',
+      lastName: 'U1L',
+      email: 'user1@user.com',
+      needsNewPwd: true,
+      isAdmin: false,
+      isDeptHead: false,
+      positions: expect.any(Array),
+      unavailable: [
+        {
+          id: 1,
+          date: '2022-07-15',
+        },
+        {
+          id: 3,
+          date: '2022-07-16',
+        },
+      ],
+    })
+  })
+
+  test('unauth if incorrect user', async function () {
+    const resp = await request(app)
+      .post(`/users/1/unavailable`)
+      .send({ date })
+      .set('authorization', `Bearer ${u2Token}`)
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test('unauth for anon', async function () {
+    const resp = await request(app)
+      .post(`/users/1/unavailable`)
+      .send({ date })
+    expect(resp.statusCode).toEqual(401)
+  })
+
+  test('not found if no such user', async function () {
+    const resp = await request(app)
+      .post(`/users/0/unavailable`)
+      .send({ date })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.statusCode).toEqual(404)
+  })
+
+  test('bad request if invalid data', async function () {
+    const resp = await request(app)
+      .post(`/users/1/unavailable`)
+      .send({ date: 2 })
       .set('authorization', `Bearer ${adminToken}`)
     expect(resp.statusCode).toEqual(400)
   })
