@@ -307,6 +307,10 @@ class User {
       `,
       [id]
     )
+
+    if (!result.rows[0]) 
+      throw new NotFoundError(`No unavailable date with id of ${id}`)
+
     return result.rows[0]
   }
 
