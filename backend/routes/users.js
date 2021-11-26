@@ -164,18 +164,6 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
   }
 })
 
-/** GET /[id]/unavailable
- * Returns list of unavailable dates for given user id.
- */
-router.get("/:id/unavailable", ensureDeptHeadOrAdmin, async function (req, res, next) {
-  try {
-    const unavailableDates = await User.getUnavailable(req.params.id)
-    return res.json({ unavailableDates })
-  } catch (err) {
-    return next(err)
-  }
-})
-
 router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, unavailableSchema)
