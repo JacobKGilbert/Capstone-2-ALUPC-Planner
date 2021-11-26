@@ -277,6 +277,15 @@ class User {
 
   /** Set user as unavailable. */
   static async makeUnavailable(userId, date) {
+    let user = await db.query(
+      `SELECT id, email
+       FROM users
+       WHERE id = $1`,
+       [userId]
+    )
+
+    if (!user.rows[0]) throw new NotFoundError(`No user: ${userId}`)
+
     let result = await db.query(
       `INSERT INTO unavailable
        (date, user_id)
@@ -285,6 +294,7 @@ class User {
       `,
       [date, userId]
     )
+
     return result.rows[0]
   }
 
