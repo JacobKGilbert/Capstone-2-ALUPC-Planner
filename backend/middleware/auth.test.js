@@ -12,8 +12,8 @@ const {
 
 
 const { SECRET_KEY } = require("../config");
-const testJwt = jwt.sign({ firstName: "test", lastName: "name", isAdmin: false, isDeptHead: false }, SECRET_KEY);
-const badJwt = jwt.sign({ firstName: "test", lastName: "name", isAdmin: false, isDeptHead: false }, "wrong");
+const testJwt = jwt.sign({ id: 1, isAdmin: false, isDeptHead: false }, SECRET_KEY);
+const badJwt = jwt.sign({ id: 1, isAdmin: false, isDeptHead: false }, "wrong");
 
 
 describe("authenticateJWT", function () {
@@ -29,8 +29,7 @@ describe("authenticateJWT", function () {
     expect(res.locals).toEqual({
       user: {
         iat: expect.any(Number),
-        firstName: 'test',
-        lastName: 'name',
+        id: 1,
         isAdmin: false,
         isDeptHead: false,
       },
@@ -145,7 +144,9 @@ describe("ensureCorrectUserOrAdmin", function () {
   test("works: admin", function () {
     expect.assertions(1);
     const req = { params: { id: 0 } };
-    const res = { locals: { user: { id: 1, isAdmin: true } } };
+    const res = { 
+      locals: { user: { id: 1, isAdmin: true, isDeptHead: false } } 
+    };
     const next = function (err) {
       expect(err).toBeFalsy();
     };
@@ -156,7 +157,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     expect.assertions(1);
     const req = { params: { id: 1 } }
     const res = {
-      locals: { user: { id: 1, isAdmin: false } },
+      locals: { user: { id: 1, isAdmin: false, isDeptHead: false } },
     }
     const next = function (err) {
       expect(err).toBeFalsy();
