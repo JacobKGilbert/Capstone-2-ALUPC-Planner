@@ -8,6 +8,8 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users")
   await db.query(`ALTER TABLE users ALTER COLUMN id RESTART WITH 1`)
+  await db.query(`DELETE FROM unavailable`)
+  await db.query(`ALTER TABLE unavailable ALTER COLUMN id RESTART WITH 1`)
 
   await User.register({
     firstName: "U1F",
@@ -33,6 +35,9 @@ async function commonBeforeAll() {
     isAdmin: true,
     isDeptHead: false
   });
+
+  const unvDate = new Date(2022, 6, 15)
+  await User.makeUnavailable(1, unvDate)
 }
 
 async function commonBeforeEach() {
@@ -51,6 +56,7 @@ async function commonAfterAll() {
 const u1Token = createToken({ id: 1, isAdmin: false, isDeptHead: false });
 const u2Token = createToken({ id: 2, isAdmin: false, isDeptHead: false });
 const adminToken = createToken({ id: 3, isAdmin: true, isDeptHead: false });
+const deptHeadToken = createToken({ id: 4, isAdmin: false, isDeptHead: true})
 
 
 module.exports = {
@@ -61,4 +67,5 @@ module.exports = {
   u1Token,
   u2Token,
   adminToken,
+  deptHeadToken
 };
