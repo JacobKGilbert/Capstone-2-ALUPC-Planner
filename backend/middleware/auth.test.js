@@ -143,7 +143,7 @@ describe("ensureAdmin", function () {
 describe("ensureCorrectUserOrAdmin", function () {
   test("works: admin", function () {
     expect.assertions(1);
-    const req = { params: { id: 0 } };
+    const req = { params: { id: "0" } };
     const res = { 
       locals: { user: { id: 1, isAdmin: true, isDeptHead: false } } 
     };
@@ -155,7 +155,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("works: same user", function () {
     expect.assertions(1);
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = {
       locals: { user: { id: 1, isAdmin: false, isDeptHead: false } },
     }
@@ -167,7 +167,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: wrong id", function () {
     expect.assertions(1);
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = {
       locals: { user: { id: 2, isAdmin: false, isDeptHead: false } },
     }
@@ -179,7 +179,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: if anon", function () {
     expect.assertions(1);
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = { locals: {} };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
@@ -191,7 +191,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 describe('ensureDeptHeadOrAdmin', function () {
   test('works: admin', function () {
     expect.assertions(1)
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = {
       locals: { user: { id: 0, isAdmin: true, isDeptHead: false } },
     }
@@ -203,7 +203,7 @@ describe('ensureDeptHeadOrAdmin', function () {
 
   test('works: department head', function () {
     expect.assertions(1)
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = {
       locals: { user: { id: 0, isAdmin: false, isDeptHead: true } },
     }
@@ -215,7 +215,7 @@ describe('ensureDeptHeadOrAdmin', function () {
 
   test('unauth: if anon', function () {
     expect.assertions(1)
-    const req = { params: { id: 1 } }
+    const req = { params: { id: "1" } }
     const res = { locals: {} }
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy()
