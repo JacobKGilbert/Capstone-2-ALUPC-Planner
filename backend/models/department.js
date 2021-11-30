@@ -8,6 +8,7 @@ const {
 } = require('../expressError')
 const User = require("../models/user")
 const Position = require("../models/position")
+const { sqlForPartialUpdate, updateDepartmentQuery} = require("../helpers/sql")
 
 /** Related functions for departments. */
 class Department {
@@ -15,17 +16,17 @@ class Department {
    * Accepts code (max length of three char), name, and deptHead (may be null)
    */
   static async create(code, name, deptHead) {
-    const duplicateCheck = db.query(
+    const duplicateCheck = await db.query(
       `SELECT code, name
        FROM departments
        WHERE code = $1`,
-       [code]
+      [code]
     )
 
-    if (duplicateCheck.rows[0]) 
+    if (duplicateCheck.rows[0])
       throw new BadRequestError('A department with that code already exists.')
 
-    const result = db.query(
+    const result = await db.query(
       `INSERT INTO departments (code, name, dept_head)
        VALUES ($1, $2, $3)
        RETURNING code, name, dept_head AS deptHead`,
@@ -37,40 +38,77 @@ class Department {
     return department
   }
 
+  /** Get All Departments
+   *  Returns a list of all departments [{ code, name, deptHead }, ...]
+   */
+  static async getAll() {
+    const result = await db.query(
+      `SELECT code,
+              name, 
+              dept_head AS "deptHead"
+       FROM departments`
+    )
+
+    const departments = result.rows
+
+    return departments
+  }
+
   static async get(code) {
-    const deptResult = db.query(
+    const deptResult = await db.query(
       `SELECT code, name, dept_head
        FROM departments
        WHERE code = $1`,
-       [code]
+      [code]
     )
     const department = deptResult.rows[0]
 
-    const eventResult = db.query(
+    const eventResult = await db.query(
       `SELECT id, date
        FROM events
        WHERE dept_code = $1`,
-       [code]
+      [code]
     )
 
-    department.events = 
+    department.events =
       eventResult.rows.map((e) => {
-        return {id: e.id, date: e.date}
+        return { id: e.id, date: e.date }
       }) || []
 
-    department.positions = Position.getForDepartment(code)
-      
-    department.voluteers = User.findAllVolunteers(code)
+    department.positions = await Position.getForDepartment(code)
+
+    department.voluteers = await User.findAllVolunteers(code)
 
     return department
   }
 
-  static async update() {
+  /** Update Department
+   *  Data may include { name [str], deptHead [int] }
+   *  Returns { code, name, deptHead }
+   */
+  static async update(code, data) {
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      deptHead: 'dept_head',
+    })
 
+    const department = await updateDepartmentQuery(code, setCols, values)
+
+    return department
   }
 
-  static async delete() {
+  /** Delete given department from database; returns undefined. */
+  static async delete(code) {
+    const result = await db.query(
+      `DELETE 
+       FROM departments
+       WHERE code = $1
+       RETURNING code`,
+      [code]
+    )
+    const department = result.rows[0]
 
+    if (!department)
+      throw new NotFoundError(`No department with code: ${code}`)
   }
 }
 
