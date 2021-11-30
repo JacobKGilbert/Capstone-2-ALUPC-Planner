@@ -7,6 +7,7 @@ const {
   UnauthorizedError,
 } = require('../expressError')
 const User = require("../models/user")
+const Position = require("../models/position")
 
 /** Related functions for departments. */
 class Department {
@@ -57,18 +58,8 @@ class Department {
         return {id: e.id, date: e.date}
       }) || []
 
-    const positionResult = db.query(
-      `SELECT code, name
-       FROM positions
-       WHERE dept_code = $1`,
-       [code]
-    )
-
-    department.positions =
-      positionResult.rows.map((p) => {
-        return { id: p.id, name: p.name }
-      }) || []
-
+    department.positions = Position.getForDepartment(code)
+      
     department.voluteers = User.findAllVolunteers(code)
 
     return department
