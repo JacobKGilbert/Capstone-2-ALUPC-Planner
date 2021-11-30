@@ -33,7 +33,8 @@ CREATE TABLE "events" (
 
 CREATE TABLE "positions" ( 
   "code" text PRIMARY KEY,
-  "name" text NOT NULL
+  "name" text NOT NULL,
+  "dept_code" text NOT NULL
 );
 
 
@@ -71,6 +72,11 @@ DELETE CASCADE;
 
 ALTER TABLE "dept_volunteers" ADD
 FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON
+DELETE CASCADE;
+
+
+ALTER TABLE "positions" ADD
+FOREIGN KEY ("dept_code") REFERENCES "departments" ("code") ON
 DELETE CASCADE;
 
 
