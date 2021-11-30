@@ -8,6 +8,7 @@ const {
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
+const Position = require("../models/position")
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -134,9 +135,7 @@ class User {
       `SELECT u.id,
               u.first_name AS "firstName",
               u.last_name AS "lastName",
-              u.email,
-              u.is_admin AS "isAdmin",
-              u.is_dept_head AS "isDeptHead"
+              u.email
       FROM users AS u
       INNER JOIN dept_volunteers AS dv
         ON dv.user_id = u.id
@@ -150,7 +149,7 @@ class User {
     for (const row of result.rows) {
       const userId = row.id
 
-      row.positions = await getPositions(userId)
+      row.positions = await Position.getForUser(userId)
 
       row.unavailable = await getUnavailable(userId)
     }
@@ -184,7 +183,7 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${id}`)
 
-    user.positions = await getPositions(id)
+    user.positions = await Position.getForUser(id)
 
     user.unavailable = await getUnavailable(id)
 
