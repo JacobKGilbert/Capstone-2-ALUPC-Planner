@@ -57,7 +57,7 @@ class Department {
       `SELECT code, name
        FROM positions
        WHERE dept_code = $1`,
-      [code]
+      [deptCode]
     )
 
     const positions =
