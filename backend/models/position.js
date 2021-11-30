@@ -52,6 +52,22 @@ class Department {
     return positions
   }
 
+  static async getForDepartment(deptCode) {
+    const positionResult = db.query(
+      `SELECT code, name
+       FROM positions
+       WHERE dept_code = $1`,
+      [code]
+    )
+
+    const positions =
+      positionResult.rows.map((p) => {
+        return { id: p.id, name: p.name }
+      }) || []
+
+    return positions
+  }
+
   static async update() {}
 
   static async delete() {}
