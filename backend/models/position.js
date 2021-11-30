@@ -7,32 +7,32 @@ const {
   UnauthorizedError,
 } = require('../expressError')
 
-/** Related functions for departments. */
-class Department {
-  /** Create a new department.
-   * Accepts code (max length of three char), name, and deptHead (may be null)
+/** Related functions for Positions. */
+class Position {
+  /** Create a new position.
+   * Accepts code (max length of four char), name, and deptCode (may not be null)
    */
-  static async create(code, name, deptHead) {
-    const duplicateCheck = db.query(
+  static async create(code, name, deptCode) {
+    const duplicateCheck = await db.query(
       `SELECT code, name
-       FROM departments
+       FROM positions
        WHERE code = $1`,
       [code]
     )
 
     if (duplicateCheck.rows[0])
-      throw new BadRequestError('A department with that code already exists.')
+      throw new BadRequestError('A position with that code already exists.')
 
-    const result = db.query(
-      `INSERT INTO departments (code, name, dept_head)
+    const result = await db.query(
+      `INSERT INTO positions (code, name, dept_code)
        VALUES ($1, $2, $3)
-       RETURNING code, name, dept_head AS deptHead`,
-      [code, name, deptHead]
+       RETURNING code, name, dept_code AS deptCode`,
+      [code, name, deptCode]
     )
 
-    const department = result.rows[0]
+    const position = result.rows[0]
 
-    return department
+    return position
   }
 
   static async getForUser(userId) {
@@ -53,7 +53,7 @@ class Department {
   }
 
   static async getForDepartment(deptCode) {
-    const positionResult = db.query(
+    const positionResult = await db.query(
       `SELECT code, name
        FROM positions
        WHERE dept_code = $1`,
@@ -73,4 +73,4 @@ class Department {
   static async delete() {}
 }
 
-module.exports = Department
+module.exports = Position
