@@ -54,23 +54,6 @@ async function updateUserQuery(id, setCols, values) {
   return user
 }
 
-async function getPositions(id) {
-  const userPositionsRes = await db.query(
-    `SELECT p.code, p.name
-     FROM positions AS p
-     INNER JOIN user_position AS up
-        ON up.position_code = p.code
-     INNER JOIN users AS u
-        ON u.id = up.user_id
-     WHERE id = $1`,
-    [id]
-  )
-  
-  const positions = userPositionsRes.rows.map((p) => p.name) || []
-
-  return positions
-}
-
 async function getUnavailable(id) {
   const userUnavailableRes = await db.query(
     `SELECT id, date
