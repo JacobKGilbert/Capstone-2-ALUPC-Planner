@@ -4,7 +4,6 @@ const db = require('../db')
 const {
   NotFoundError,
   BadRequestError,
-  UnauthorizedError,
 } = require('../expressError')
 const User = require("../models/user")
 const Position = require("../models/position")
