@@ -7,6 +7,7 @@ const {
 } = require('../expressError')
 const User = require("../models/user")
 const Position = require("../models/position")
+const Event = require("../models/event")
 const { sqlForPartialUpdate, updateDepartmentQuery} = require("../helpers/sql")
 
 /** Related functions for departments. */
@@ -62,17 +63,7 @@ class Department {
     )
     const department = deptResult.rows[0]
 
-    const eventResult = await db.query(
-      `SELECT id, date
-       FROM events
-       WHERE dept_code = $1`,
-      [code]
-    )
-
-    department.events =
-      eventResult.rows.map((e) => {
-        return { id: e.id, date: e.date }
-      }) || []
+    department.events = await Event.getAllForDepartment(code)
 
     department.positions = await Position.getForDepartment(code)
 
