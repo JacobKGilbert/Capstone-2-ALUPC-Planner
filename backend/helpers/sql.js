@@ -72,6 +72,24 @@ async function updateDepartmentQuery(deptCode, setCols, values) {
   return department
 }
 
+async function updatePositionQuery(posCode, setCols, values) {
+  const userIdVarIdx = '$' + (values.length + 1)
+
+  const querySql = `UPDATE positions 
+                    SET ${setCols} 
+                    WHERE code = ${userIdVarIdx} 
+                    RETURNING code,
+                              name,
+                              dept_code AS "deptCode"`
+  const result = await db.query(querySql, [...values, posCode])
+  const position = result.rows[0]
+
+  if (!position) 
+    throw new NotFoundError(`No position with code: ${posCode}`)
+
+  return position
+}
+
 async function getUnavailable(id) {
   const userUnavailableRes = await db.query(
     `SELECT id, date
@@ -92,6 +110,7 @@ async function getUnavailable(id) {
 module.exports = { 
   sqlForPartialUpdate, 
   updateUserQuery, 
-  updateDepartmentQuery, 
+  updateDepartmentQuery,
+  updatePositionQuery,
   getUnavailable 
 };
