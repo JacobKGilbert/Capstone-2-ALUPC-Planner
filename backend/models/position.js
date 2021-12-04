@@ -4,8 +4,8 @@ const db = require('../db')
 const {
   NotFoundError,
   BadRequestError,
-  UnauthorizedError,
 } = require('../expressError')
+const { updatePositionQuery } = require("../helpers/sql")
 
 /** Related functions for Positions. */
 class Position {
@@ -43,8 +43,8 @@ class Position {
           ON up.position_code = p.code
        INNER JOIN users AS u
           ON u.id = up.user_id
-       WHERE id = $1`,
-       [userId]
+       WHERE u.id = $1`,
+      [userId]
     )
 
     const positions = userPositionsRes.rows.map((p) => p.name) || []
@@ -68,9 +68,32 @@ class Position {
     return positions
   }
 
-  static async update() {}
+  /** Update Position
+   *  Data may include { name [str], deptCode [int] }
+   *  Returns { code, name, deptCode }
+   */
+  static async update(code, data) {
+    const { setCols, values } = sqlForPartialUpdate(data, {
+      deptCode: 'dept_code',
+    })
 
-  static async delete() {}
+    const position = await updatePositionQuery(code, setCols, values)
+
+    return position
+  }
+
+  static async delete(code) {
+    const result = await db.query(
+      `DELETE 
+       FROM positions
+       WHERE code = $1
+       RETURNING code`,
+      [code]
+    )
+    const position = result.rows[0]
+
+    if (!position) throw new NotFoundError(`No position with code: ${code}`)
+  }
 }
 
 module.exports = Position
