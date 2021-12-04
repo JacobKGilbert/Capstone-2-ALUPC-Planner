@@ -9,6 +9,7 @@ const {
   UnauthorizedError,
 } = require("../expressError");
 const Position = require("../models/position")
+const Event = require("../models/event")
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -151,6 +152,8 @@ class User {
 
       row.positions = await Position.getForUser(userId)
 
+      row.events = await Event.getAllForUser(userId)
+
       row.unavailable = await getUnavailable(userId)
     }
 
@@ -184,6 +187,8 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${id}`)
 
     user.positions = await Position.getForUser(id)
+
+    user.events = await Event.getAllForUser(id)
 
     user.unavailable = await getUnavailable(id)
 
