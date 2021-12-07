@@ -45,7 +45,7 @@ class Event {
               ev.position_code AS "positionCode"
        FROM events AS e
        INNER JOIN events_volunteers AS ev
-          ON ev.event_code = e.id
+          ON ev.event_id = e.id
        INNER JOIN users AS u
           ON u.id = ev.user_id
        WHERE u.id = $1`,
