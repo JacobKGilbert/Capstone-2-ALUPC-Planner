@@ -1,6 +1,6 @@
 INSERT INTO users (first_name, last_name, email, password, is_admin)
 VALUES 
-('Jacob', 'Gilbert', 'jacobkgilbert@protonmail.com', 'jacob_password', true);
+('Jacob', 'Gilbert', 'jacobkgilbert@protonmail.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', true);
 
 INSERT INTO departments (code, name)
 VALUES
