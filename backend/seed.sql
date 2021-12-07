@@ -13,21 +13,22 @@ VALUES
 ('ush', 'Ushers'),
 ('tch', 'Tech');
 
-INSERT INTO positions (code, name)
+INSERT INTO positions (code, name, dept_code)
 VALUES
-('pch', 'Preacher'),
-('tch', 'Teacher'),
-('sop', 'Soprano'),
-('alt', 'Alto'),
-('tnr', 'Tenor'),
-('bar', 'Baritone'),
-('bss', 'Bass'),
-('gtr', 'Guitar'),
-('bgtr', 'Bass Guitar'),
-('pno', 'Piano'),
-('org', 'Organ'),
-('drm', 'Drums'),
-('tmb', 'Trombone'),
-('soc', 'Social'),
-('web', 'Website'),
-('opr', 'Operator');
+('pch', 'Preacher', 'p-t'),
+('tch', 'Teacher', 'p-t'),
+('sop', 'Soprano', 'prs'),
+('alt', 'Alto', 'prs'),
+('tnr', 'Tenor', 'prs'),
+('bar', 'Baritone', 'prs'),
+('bss', 'Bass', 'msc'),
+('gtr', 'Guitar', 'msc'),
+('bgtr', 'Bass Guitar', 'msc'),
+('pno', 'Piano', 'msc'),
+('org', 'Organ', 'msc'),
+('drm', 'Drums', 'msc'),
+('tmb', 'Trombone', 'msc'),
+('soc', 'Social', 'tch'),
+('web', 'Website', 'tch'),
+('sopr', 'Sound Operator', 'snd'),
+('vopr', 'Camera Operator', 'vsl');
