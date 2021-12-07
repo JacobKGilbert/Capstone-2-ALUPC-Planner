@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const { sqlForPartialUpdate, updateUserQuery, getPositions, getUnavailable } = require("../helpers/sql");
+const { sqlForPartialUpdate, updateUserQuery, getUnavailable } = require("../helpers/sql");
 const {
   NotFoundError,
   BadRequestError,
