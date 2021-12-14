@@ -40,24 +40,29 @@ class Event {
   static async getAllForUser(userId) {
     const userEventRes = await db.query(
       `SELECT e.id,
-              e.date,
-              e.dept_code AS "deptCode",
-              ev.position_code AS "positionCode"
+              TO_CHAR(e.date::DATE, 'Day Month DD, YYYY') AS "date",
+              d.name AS "deptName",
+              p.name AS "positionName"
        FROM events AS e
        INNER JOIN events_volunteers AS ev
           ON ev.event_id = e.id
        INNER JOIN users AS u
           ON u.id = ev.user_id
-       WHERE u.id = $1`,
+       INNER JOIN positions AS p
+          ON p.code = ev.position_code
+       INNER JOIN departments AS d
+          ON d.code = e.dept_code
+       WHERE u.id = $1 AND e.date >= CURRENT_DATE
+       GROUP BY e.id, d.name, p.name
+       ORDER BY e.date ASC`,
       [userId]
     )
-
     const events = userEventRes.rows.map((e) => {
       return {
         id: e.id,
         date: e.date,
-        deptCode: e.deptCode,
-        positionCode: e.positionCode
+        deptName: e.deptName,
+        positionName: e.positionName
       }
     }) || []
 
