@@ -15,16 +15,16 @@ const Home = () => {
     }, [setCurrUser])
 
   useEffect(() => {
-    let id = null
+    const localToken = JSON.parse(localStorage.getItem('token'))
+    const id = JSON.parse(localStorage.getItem('id'))
     if (!currUser) {
-      const localToken = JSON.parse(localStorage.getItem('token'))
-      id = JSON.parse(localStorage.getItem('id'))
-
       if (localToken && id) {
         getUser(id)
       }
     } else {
-      navigate(`/users/${id}`)
+      if (localToken && id) {
+        navigate(`/users/${id}`)
+      }
     }
   }, [currUser, getUser, navigate])
 
