@@ -280,7 +280,7 @@ class User {
   }
 
   /** Set user as unavailable. */
-  static async makeUnavailable(userId, date) {
+  static async makeUnavailable(userId, dates) {
     let user = await db.query(
       `SELECT id, email
        FROM users
@@ -290,16 +290,40 @@ class User {
 
     if (!user.rows[0]) throw new NotFoundError(`No user: ${userId}`)
 
-    let result = await db.query(
-      `INSERT INTO unavailable
-       (date, user_id)
-       VALUES ($1, $2)
-       RETURNING id
-      `,
-      [date, userId]
-    )
+    const getDaysArray =  (start, end) => {
+      const daysArr = []
+      for (let dt = new Date(start); 
+           dt <= new Date(end); 
+           dt.setDate(dt.getDate() + 1)
+      ) {
+        daysArr.push(new Date(dt))
+      }
+      return daysArr
+    }
+    
+    if (dates[0] !== dates[1]) {
+      const daysArr = getDaysArray(dates[0], dates[1])
 
-    return result.rows[0]
+      for (const day of daysArr) {
+        await db.query(
+          `INSERT INTO unavailable (date, user_id)
+           VALUES ($1, $2)
+           RETURNING id
+          `,
+          [day, userId]
+        )
+      }
+      return
+    } else {
+      await db.query(
+        `INSERT INTO unavailable (date, user_id)
+         VALUES ($1, $2)
+         RETURNING id
+        `,
+        [dates[0], userId]
+      )
+      return
+    }
   }
 
   /** Set user as available. */
