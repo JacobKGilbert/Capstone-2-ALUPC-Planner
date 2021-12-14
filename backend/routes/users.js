@@ -177,7 +177,7 @@ router.post("/:id/unavailable", ensureCorrectUserOrAdmin, async function (req, r
       throw new BadRequestError(errs)
     }
 
-    await User.makeUnavailable(req.params.id, req.body.date)
+    await User.makeUnavailable(req.params.id, req.body.dates)
     return res.status(201).json({ msg: "Successfully made unavailable."})
   } catch (err) {
     return next(err)
