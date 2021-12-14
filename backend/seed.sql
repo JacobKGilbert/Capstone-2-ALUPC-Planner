@@ -32,3 +32,29 @@ VALUES
 ('web', 'Website', 'tch'),
 ('sopr', 'Sound Operator', 'snd'),
 ('vopr', 'Camera Operator', 'vsl');
+
+INSERT INTO events (date, dept_code)
+VALUES
+('2020-01-22', 'snd'),
+('2022-12-11', 'p-t'),
+('2022-12-10', 'snd');
+
+INSERT INTO dept_volunteers (dept_code, user_id)
+VALUES
+('snd', 1),
+('p-t', 1);
+
+INSERT INTO user_position (user_id, position_code)
+VALUES
+(1, 'sopr'),
+(1, 'tch');
+
+INSERT INTO events_volunteers (user_id, event_id, position_code)
+VALUES
+(1, 1, 'sopr'),
+(1, 2, 'tch'),
+(1, 3, 'sopr');
+
+INSERT INTO unavailable (date, user_id)
+VALUES
+('2020-01-23', 1);
