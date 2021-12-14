@@ -8,13 +8,13 @@ import MyTooltip from './Tooltip'
 
 const Profile = () => {
   const [ isLoading, setIsLoading ] = useState(true)
-  const [ events, setEvents ] = useState([])
   const { currUser } = useContext(UserContext)
 
   useEffect(() => {
-    setEvents(currUser.events)
-    setIsLoading(false)
-  }, [events, currUser.events])
+    if (currUser) {
+      setIsLoading(false)
+    }
+  }, [currUser])
 
   if (isLoading) {
     return <h1>Loading...</h1>
@@ -27,7 +27,7 @@ const Profile = () => {
       </h1>
       <div className="col-xl-9 col-lg-8 col-md-7 col-sm-6 mt-2">
         <h2>My Schedule</h2>
-        {events.map((ev) => (
+        {currUser.events.map((ev) => (
           <EventCard key={ev.id} event={ev} />
         ))}
       </div>
