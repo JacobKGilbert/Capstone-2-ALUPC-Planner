@@ -13,7 +13,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
 class ChurchPlannerApi {
   // the token for interacting with the API will be stored here.
-  static token
+  static token = JSON.parse(localStorage.getItem('token')) || ''
 
   static async request(endpoint, data = {}, method = 'get') {
     console.debug('API Call:', endpoint, data, method)
@@ -36,8 +36,7 @@ class ChurchPlannerApi {
 
   static async loginUser(data) {
     let res = await this.request('auth/token', data, 'post')
-    ChurchPlannerApi.token = res.token
-    return { id: res.id }
+    return { tkn: res.token, id: res.id }
   }
 
   static async getUser(id) {
