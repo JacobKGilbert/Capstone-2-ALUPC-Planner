@@ -3,21 +3,19 @@ import ChurchPlannerApi from './api'
 
 
 const useAuth = () => {
-  const [isLoading, setIsLoading] = useState(false)
   const [currUser, setCurrUser] = useState(null)
 
   const login = async ({ email, password }) => {
-    setIsLoading(true)
-    const { id } = await ChurchPlannerApi.loginUser({ email, password })
+    const { tkn, id } = await ChurchPlannerApi.loginUser({ email, password })
+    localStorage.setItem('token', JSON.stringify(tkn))
     localStorage.setItem('id', JSON.stringify(id))
 
     await getUser(id)
-    setIsLoading(false)
   }
 
   const logout = () => {
     localStorage.removeItem('id')
-    ChurchPlannerApi.token = null
+    localStorage.removeItem('token')
     setCurrUser(null)
   }
 
@@ -27,7 +25,6 @@ const useAuth = () => {
   }
 
   return {
-    isLoading,
     currUser,
     login,
     logout,
