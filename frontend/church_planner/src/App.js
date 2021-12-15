@@ -1,20 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import NavBar from './NavBar'
-import UserContext from './UserContext'
+import AuthContext from './AuthContext'
 import './css/App.css'
+import useAuth from './useAuth'
 
 function App() {
-  const [currUser, setCurrUser] = useState(null)
+  const auth = useAuth()
 
   return (
     <div className="App">
-      <UserContext.Provider value={{ currUser, setCurrUser }}>
+      <AuthContext.Provider value={auth}>
         <NavBar />
         <main className="pt-5 mt-5 container">
           <Outlet />
         </main>
-      </UserContext.Provider>
+      </AuthContext.Provider>
     </div>
   )
 }

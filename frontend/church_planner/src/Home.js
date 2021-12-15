@@ -2,10 +2,10 @@ import React, { useContext, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, ButtonGroup } from 'reactstrap'
 import ChurchPlannerApi from './api'
-import UserContext from './UserContext'
+import AuthContext from './AuthContext'
 
 const Home = () => {
-  const { currUser, setCurrUser } = useContext(UserContext)
+  const { currUser, setCurrUser } = useContext(AuthContext)
 
   const navigate = useNavigate()
 

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Button } from 'reactstrap'
-import UserContext from './UserContext'
+import UserContext from './AuthContext'
 import Calendar from 'react-calendar'
 import ChurchPlannerApi from './api'
 import 'react-calendar/dist/Calendar.css'

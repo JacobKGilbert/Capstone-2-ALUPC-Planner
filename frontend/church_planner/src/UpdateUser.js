@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Label, Input, Button, Alert } from 'reactstrap'
-import UserContext from './UserContext'
+import AuthContext from './AuthContext'
 import ChurchPlannerApi from './api'
 
 const UpdateUser = () => {
-  const { currUser, setCurrUser } = useContext(UserContext)
+  const { currUser, setCurrUser } = useContext(AuthContext)
 
   const INITIAL_STATE = {
     firstName: `${currUser.firstName}`,

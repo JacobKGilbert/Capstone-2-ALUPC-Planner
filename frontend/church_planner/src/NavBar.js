@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import { NavLink, useNavigate } from "react-router-dom";
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, Button } from "reactstrap";
-import UserContext from './UserContext'
+import AuthContext from './AuthContext'
 
 const NavBar = () => {
-  const { currUser, setCurrUser } = useContext(UserContext)
+  const { currUser, setCurrUser } = useContext(AuthContext)
   const [collapsed, setCollapsed] = useState(true)
   const navigate = useNavigate()
   let userOptions

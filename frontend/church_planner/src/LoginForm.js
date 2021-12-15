@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Label } from 'reactstrap';
 import ChurchPlannerApi from './api'
-import UserContext from './UserContext';
+import AuthContext from './AuthContext';
 
 const LoginForm = () => {
   const INITIAL_STATE = {
@@ -10,7 +10,7 @@ const LoginForm = () => {
     password: ''
   }
   const [formData, setFormData] = useState(INITIAL_STATE)
-  const { setCurrUser } = useContext(UserContext)
+  const { setCurrUser } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleChange = (evt) => {

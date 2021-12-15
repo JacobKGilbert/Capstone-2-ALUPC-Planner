@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { Card, CardHeader, CardBody, CardTitle, CardText } from 'reactstrap'
 import UnavailableForm from './UnavailableForm'
-import UserContext from './UserContext'
+import AuthContext from './AuthContext'
 import EventCard from './EventCard'
 import MyTooltip from './Tooltip'
 
 const Profile = () => {
   const [ isLoading, setIsLoading ] = useState(true)
-  const { currUser } = useContext(UserContext)
+  const { currUser } = useContext(AuthContext)
 
   useEffect(() => {
     if (currUser) {
