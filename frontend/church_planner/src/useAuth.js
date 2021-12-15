@@ -11,8 +11,13 @@ const useAuth = () => {
 
   const login = async ({ email, password }) => {
     setIsLoading(true)
-    const user = await ChurchPlannerApi.loginUser({ email, password })
-    
+    const { tkn, id } = await ChurchPlannerApi.loginUser({ email, password })
+    localStorage.setItem('token', JSON.stringify(tkn))
+    localStorage.setItem('id', JSON.stringify(id))
+
+    const user = await ChurchPlannerApi.getUser(id)
+    setCurrUser(user)
+    setIsLoading(false)
   }
 
   const logout = () => {

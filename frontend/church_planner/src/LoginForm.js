@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Label } from 'reactstrap';
-import ChurchPlannerApi from './api'
 import AuthContext from './AuthContext';
 
 const LoginForm = () => {
@@ -10,7 +9,7 @@ const LoginForm = () => {
     password: ''
   }
   const [formData, setFormData] = useState(INITIAL_STATE)
-  const { setCurrUser } = useContext(AuthContext)
+  const { login } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleChange = (evt) => {
@@ -24,14 +23,11 @@ const LoginForm = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault()
 
-    const { tkn, id } = await ChurchPlannerApi.loginUser({...formData})
-    localStorage.setItem('token', JSON.stringify(tkn))
-    localStorage.setItem('id', JSON.stringify(id))
-
-    const user = await ChurchPlannerApi.getUser(id)
-    setCurrUser(user)
+    login({...formData})
 
     setFormData(INITIAL_STATE)
+
+    const id = JSON.parse(localStorage.getItem('id'))
     navigate(`/users/${id}`)
   }
 
