@@ -1,36 +1,37 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import ChurchPlannerApi from './api'
 
 
 const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [currUser, setCurrUser] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [isDeptHead, setIsDeptHead] = useState(false)
 
   const login = async ({ email, password }) => {
     setIsLoading(true)
-    const { tkn, id } = await ChurchPlannerApi.loginUser({ email, password })
-    localStorage.setItem('token', JSON.stringify(tkn))
+    const { id } = await ChurchPlannerApi.loginUser({ email, password })
     localStorage.setItem('id', JSON.stringify(id))
 
-    const user = await ChurchPlannerApi.getUser(id)
-    setCurrUser(user)
+    await getUser(id)
     setIsLoading(false)
   }
 
   const logout = () => {
+    localStorage.removeItem('id')
+    ChurchPlannerApi.token = null
+    setCurrUser(null)
+  }
 
+  const getUser = async (id) => {
+    const user = await ChurchPlannerApi.getUser(id)
+    setCurrUser(user)
   }
 
   return {
     isLoading,
     currUser,
-    isAdmin,
-    isDeptHead,
     login,
-    logout
+    logout,
+    getUser
   }
 }
 
