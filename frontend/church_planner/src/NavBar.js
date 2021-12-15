@@ -4,19 +4,15 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, Button } fr
 import AuthContext from './AuthContext'
 
 const NavBar = () => {
-  const { currUser, setCurrUser } = useContext(AuthContext)
+  const { currUser, logout } = useContext(AuthContext)
   const [collapsed, setCollapsed] = useState(true)
   const navigate = useNavigate()
   let userOptions
 
   const toggleNavbar = () => setCollapsed(!collapsed)
 
-  const logout = () => {
-    setCurrUser(null)
-
-    localStorage.removeItem('token')
-    localStorage.removeItem('id')
-
+  const handleClick = () => {
+    logout()
     navigate('/')
   }
 
@@ -39,7 +35,7 @@ const NavBar = () => {
           </NavLink>
         </NavItem>
         <NavItem>
-          <Button color='danger' onClick={logout}>
+          <Button color='danger' onClick={handleClick}>
             Log Out
           </Button>
         </NavItem>
