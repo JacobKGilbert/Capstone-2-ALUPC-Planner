@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { Card, CardHeader, CardBody, CardTitle, CardText } from 'reactstrap'
 import UnavailableForm from './UnavailableForm'
@@ -7,14 +7,7 @@ import EventCard from './EventCard'
 import MyTooltip from './Tooltip'
 
 const Profile = () => {
-  const [ isLoading, setIsLoading ] = useState(true)
-  const { currUser } = useContext(AuthContext)
-
-  useEffect(() => {
-    if (currUser) {
-      setIsLoading(false)
-    }
-  }, [currUser])
+  const { currUser, isLoading } = useContext(AuthContext)
 
   if (isLoading) {
     return <h1>Loading...</h1>
