@@ -23,7 +23,7 @@ const LoginForm = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault()
 
-    login({...formData})
+    await login({...formData})
 
     setFormData(INITIAL_STATE)
 
