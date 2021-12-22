@@ -39,6 +39,11 @@ class ChurchPlannerApi {
     return { tkn: res.token, id: res.id }
   }
 
+  static async getAllUsers() {
+    let res = await this.request('users')
+    return res.users
+  }
+
   static async getUser(id) {
     let res = await this.request(`users/${id}`)
     return res.user
@@ -47,6 +52,18 @@ class ChurchPlannerApi {
   static async updateUser(data) {
     let res = await this.request(`users/${data.id}`, data, 'patch')
     return res.user
+  }
+
+  static async updateUserPermissions(data) {
+    let id = data.id
+    delete data.id 
+    let res = await this.request(`users/${id}/auth`, data, 'patch')
+    return res.user
+  }
+
+  static async deleteUser(id) {
+    let res = await this.request(`users/${id}`, {}, 'delete')
+    return res
   }
 
   static async makeUnavailable(data) {
