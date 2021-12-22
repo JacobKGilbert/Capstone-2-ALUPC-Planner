@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import App from './App'
 import Home from './Home'
 import LoginForm from './LoginForm'
+import Users from './Users'
 import Profile from './Profile'
 import UpdateUser from './UpdateUser'
 
@@ -12,6 +13,7 @@ const RoutesList = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="users">
+          <Route index element={<Users />} />
           <Route path=":id">
             <Route index element={<Profile />} />
             <Route path="update" element={<UpdateUser />} />
