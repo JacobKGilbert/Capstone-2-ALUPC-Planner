@@ -1,19 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Button, ButtonGroup } from 'reactstrap'
 import AuthContext from './AuthContext'
 
 const Home = () => {
-  const { currUser, getUser } = useContext(AuthContext)
+  const { currUser } = useContext(AuthContext)
   const id = JSON.parse(localStorage.getItem('id'))
-
-  useEffect(() => {
-    if (!currUser) {
-      if (id) {
-        getUser(id)
-      }
-    } 
-  }, [currUser, getUser, id])
 
   if (!currUser) {
     return (
