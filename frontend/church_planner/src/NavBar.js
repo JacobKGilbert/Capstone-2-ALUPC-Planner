@@ -1,6 +1,17 @@
 import React, { useContext, useState } from 'react'
 import { NavLink, useNavigate } from "react-router-dom";
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, Button } from "reactstrap";
+import { Collapse, 
+         Navbar, 
+         NavbarToggler, 
+         NavbarBrand, 
+         Nav, 
+         NavItem, 
+         Button,
+         UncontrolledDropdown,
+         DropdownToggle,
+         DropdownMenu,
+         DropdownItem
+       } from "reactstrap";
 import AuthContext from './AuthContext'
 
 const NavBar = () => {
@@ -8,6 +19,31 @@ const NavBar = () => {
   const [collapsed, setCollapsed] = useState(true)
   const navigate = useNavigate()
   let userOptions
+
+  const adminOptions = (
+    <UncontrolledDropdown nav inNavbar>
+      <DropdownToggle nav caret>
+        Options
+      </DropdownToggle>
+      <DropdownMenu end>
+        <DropdownItem>
+          <NavLink className="nav-link text-dark" to={`/Schedule`}>
+            Schedule
+          </NavLink>
+        </DropdownItem>
+        <DropdownItem>
+          <NavLink className="nav-link text-dark" to={`/users`}>
+            Users
+          </NavLink>
+        </DropdownItem>
+        <DropdownItem>
+          <NavLink className="nav-link text-dark" to={`/departments`}>
+            Departments
+          </NavLink>
+        </DropdownItem>
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  )
 
   const toggleNavbar = () => setCollapsed(!collapsed)
 
@@ -29,6 +65,7 @@ const NavBar = () => {
   } else {
     userOptions = (
       <Nav navbar className="ms-auto">
+        {currUser.isAdmin ? adminOptions : null}
         <NavItem>
           <NavLink className="nav-link" to={`/users/${currUser.id}`}>
             Profile
