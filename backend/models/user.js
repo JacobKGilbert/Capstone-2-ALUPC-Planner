@@ -267,10 +267,11 @@ class User {
   }
 
   /** Update user to be admin and/or department head */
-  static async updateUserToAdminOrDeptHead(id, data) {
+  static async updateUserPermissions(id, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {
       isAdmin: 'is_admin',
       isDeptHead: 'is_dept_head',
+      needsNewPwd: 'needs_new_pwd'
     })
     const user = await updateUserQuery(id, setCols, values)
 
