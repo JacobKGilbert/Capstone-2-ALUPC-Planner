@@ -157,7 +157,7 @@ router.patch("/:id/auth", ensureAdmin, async function (req, res, next) {
       throw new BadRequestError(errs)
     }
 
-    const user = await User.updateUserToAdminOrDeptHead(req.params.id, req.body)
+    const user = await User.updateUserPermissions(req.params.id, req.body)
     return res.json({ user })
   } catch (err) {
     return next(err)
