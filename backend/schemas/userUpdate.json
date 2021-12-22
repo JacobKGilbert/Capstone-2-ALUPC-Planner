@@ -34,6 +34,9 @@
     },
     "isDeptHead": {
       "type": "boolean"
+    },
+    "needsNewPwd": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false,
