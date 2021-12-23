@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { Card, CardHeader, CardBody, CardTitle, CardText } from 'reactstrap'
+import { Card, CardHeader, CardBody, CardText } from 'reactstrap'
 import UnavailableForm from './UnavailableForm'
 import AuthContext from './AuthContext'
 import EventCard from './EventCard'
@@ -34,7 +34,6 @@ const Profile = () => {
             <Card>
               <CardHeader tag="h3">Links</CardHeader>
               <CardBody>
-                <CardTitle tag="h5">Special Title Treatment</CardTitle>
                 <CardText>
                   <Link to="update">
                     Update Profile
