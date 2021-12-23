@@ -51,6 +51,10 @@ class Department {
 
     const departments = result.rows
 
+    for (const dept of departments) {
+      dept.deptHead = await this.getDeptHead(dept.code)
+    }
+
     return departments
   }
 
@@ -70,6 +74,21 @@ class Department {
     department.voluteers = await User.findAllVolunteers(code)
 
     return department
+  }
+
+  static async getDeptHead(code) {
+    const result = await db.query(
+      `SELECT u.id,
+              u.first_name AS "firstName",
+              u.last_name AS "lastName"
+       FROM users AS u
+       INNER JOIN departments AS d
+        ON d.dept_head = u.id
+       WHERE d.code = $1`,
+      [code]
+    )
+
+    return result.rows[0]
   }
 
   /** Update Department
