@@ -2,16 +2,16 @@ INSERT INTO users (first_name, last_name, email, password, is_admin)
 VALUES 
 ('Jacob', 'Gilbert', 'jacobkgilbert@protonmail.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', true);
 
-INSERT INTO departments (code, name)
+INSERT INTO departments (code, name, dept_head)
 VALUES
-('p-t', 'Preaching/Teaching'),
-('msc', 'Musicians'),
-('prs', 'Praise Team'),
-('lrc', 'Lyrics'),
-('snd', 'Sound'),
-('vsl', 'Visual'),
-('ush', 'Ushers'),
-('tch', 'Tech');
+('p-t', 'Preaching/Teaching', null),
+('msc', 'Musicians', null),
+('prs', 'Praise Team', null),
+('lrc', 'Lyrics', null),
+('snd', 'Sound', null),
+('vsl', 'Visual', null),
+('ush', 'Ushers', null),
+('tch', 'Tech', 1);
 
 INSERT INTO positions (code, name, dept_code)
 VALUES
