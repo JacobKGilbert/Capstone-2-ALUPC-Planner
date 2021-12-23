@@ -5,6 +5,8 @@ import LoginForm from './LoginForm'
 import Users from './Users'
 import Profile from './Profile'
 import UpdateUser from './UpdateUser'
+import Departments from './Departments'
+import Department from './Department'
 import ScheduleForm from './ScheduleForm'
 
 const RoutesList = () => {
@@ -20,7 +22,13 @@ const RoutesList = () => {
             <Route path="update" element={<UpdateUser />} />
           </Route>
         </Route>
-        <Route path='schedule' element={<ScheduleForm />}/>
+        <Route path="departments">
+          <Route index element={<Departments />} />
+          <Route path=":deptId">
+            <Route index element={<Department />} />
+            <Route path="schedule" element={<ScheduleForm />} />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   )
