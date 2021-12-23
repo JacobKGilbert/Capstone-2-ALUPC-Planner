@@ -5,6 +5,7 @@ import LoginForm from './LoginForm'
 import Users from './Users'
 import Profile from './Profile'
 import UpdateUser from './UpdateUser'
+import ScheduleForm from './ScheduleForm'
 
 const RoutesList = () => {
   return (
@@ -19,6 +20,7 @@ const RoutesList = () => {
             <Route path="update" element={<UpdateUser />} />
           </Route>
         </Route>
+        <Route path='schedule' element={<ScheduleForm />}/>
       </Route>
     </Routes>
   )
