@@ -20,17 +20,20 @@ const NavBar = () => {
   const navigate = useNavigate()
   let userOptions
 
+  const deptHeadOptions = (
+    <DropdownItem>
+      <NavLink className="nav-link text-dark" to={`:deptId/schedule`}>
+        Schedule
+      </NavLink>
+    </DropdownItem>
+  )
+
   const adminOptions = (
     <UncontrolledDropdown nav inNavbar>
       <DropdownToggle nav caret>
         Options
       </DropdownToggle>
       <DropdownMenu end>
-        <DropdownItem>
-          <NavLink className="nav-link text-dark" to={`/Schedule`}>
-            Schedule
-          </NavLink>
-        </DropdownItem>
         <DropdownItem>
           <NavLink className="nav-link text-dark" to={`/users`}>
             Users
@@ -41,6 +44,7 @@ const NavBar = () => {
             Departments
           </NavLink>
         </DropdownItem>
+        {currUser.isDeptHead ? deptHeadOptions : <div></div>}
       </DropdownMenu>
     </UncontrolledDropdown>
   )
