@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
-import { Card, CardHeader, CardBody, CardText } from 'reactstrap'
+import { Navigate, useParams } from 'react-router-dom'
 import UnavailableForm from './UnavailableForm'
 import AuthContext from './AuthContext'
 import EventCard from './EventCard'
