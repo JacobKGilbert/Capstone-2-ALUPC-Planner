@@ -31,16 +31,6 @@ const Profile = () => {
               </span>
             </h5>
             <UnavailableForm />
-            <Card>
-              <CardHeader tag="h3">Links</CardHeader>
-              <CardBody>
-                <CardText>
-                  <Link to="update">
-                    Update Profile
-                  </Link>
-                </CardText>
-              </CardBody>
-            </Card>
           </div>
         </div>
       )
