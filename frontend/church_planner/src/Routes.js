@@ -24,7 +24,7 @@ const RoutesList = () => {
         </Route>
         <Route path="departments">
           <Route index element={<Departments />} />
-          <Route path=":deptId">
+          <Route path=":deptCode">
             <Route index element={<Department />} />
             <Route path="schedule" element={<ScheduleForm />} />
           </Route>
