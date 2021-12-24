@@ -13,6 +13,7 @@ import { Collapse,
          DropdownItem
        } from "reactstrap";
 import AuthContext from './AuthContext'
+import NavBarProfileDropdown from './NavBarProfileDropdown'
 
 const NavBar = () => {
   const { currUser, logout } = useContext(AuthContext)
@@ -21,32 +22,33 @@ const NavBar = () => {
   let userOptions
 
   const deptHeadOptions = (
-    <DropdownItem>
-      <NavLink className="nav-link text-dark" to={`:deptId/schedule`}>
-        Schedule
-      </NavLink>
-    </DropdownItem>
+    <>
+      <DropdownItem text> Department Head </DropdownItem>
+      <DropdownItem>
+        <NavLink
+          className="nav-link text-dark"
+          to={`departments/:deptId/schedule`}
+        >
+          Schedule
+        </NavLink>
+      </DropdownItem>
+    </>
   )
 
   const adminOptions = (
-    <UncontrolledDropdown nav inNavbar>
-      <DropdownToggle nav caret>
-        Options
-      </DropdownToggle>
-      <DropdownMenu end>
-        <DropdownItem>
-          <NavLink className="nav-link text-dark" to={`/users`}>
-            Users
-          </NavLink>
-        </DropdownItem>
-        <DropdownItem>
-          <NavLink className="nav-link text-dark" to={`/departments`}>
-            Departments
-          </NavLink>
-        </DropdownItem>
-        {currUser.isDeptHead ? deptHeadOptions : <div></div>}
-      </DropdownMenu>
-    </UncontrolledDropdown>
+    <>
+      <DropdownItem text> Admin </DropdownItem>
+      <DropdownItem>
+        <NavLink className="nav-link text-dark" to={`/users`}>
+          Users
+        </NavLink>
+      </DropdownItem>
+      <DropdownItem>
+        <NavLink className="nav-link text-dark" to={`/departments`}>
+          Departments
+        </NavLink>
+      </DropdownItem>
+    </>
   )
 
   const toggleNavbar = () => setCollapsed(!collapsed)
@@ -69,14 +71,21 @@ const NavBar = () => {
   } else {
     userOptions = (
       <Nav navbar className="ms-auto">
-        {currUser.isAdmin ? adminOptions : null}
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret>
+            Options
+          </DropdownToggle>
+          <DropdownMenu end>
+            {currUser.isAdmin ? adminOptions : null}
+            {currUser.isAdmin && currUser.isDeptHead ? <DropdownItem divider /> : null}
+            {currUser.isDeptHead ? deptHeadOptions : null}
+          </DropdownMenu>
+        </UncontrolledDropdown>
+
+        <NavBarProfileDropdown />
+        
         <NavItem>
-          <NavLink className="nav-link" to={`/users/${currUser.id}`}>
-            Profile
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <Button color='danger' onClick={handleClick}>
+          <Button color="danger" onClick={handleClick}>
             Log Out
           </Button>
         </NavItem>
