@@ -33,6 +33,7 @@ class ChurchPlannerApi {
   }
 
   // Individual API routes
+  // User API Route calls
 
   static async loginUser(data) {
     let res = await this.request('auth/token', data, 'post')
@@ -71,6 +72,22 @@ class ChurchPlannerApi {
     delete data.id 
     let res = await this.request(`users/${id}/unavailable`, data, 'post')
     return res.msg
+  }
+
+  //Department API Route calls
+  static async getAllDepts() {
+    let res = await this.request('departments')
+    return res.departments
+  }
+
+  static async getDept(code) {
+    let res = await this.request(`departments/${code}`)
+    return res.department
+  }
+
+  static async deleteDept(code) {
+    let res = await this.request(`departments/${code}`, {}, 'delete')
+    return res
   }
 }
 
