@@ -69,7 +69,7 @@ class Event {
     return events
   }
 
-  static async getAllForDepartments(deptCode) {
+  static async getAllForDepartment(deptCode) {
     const eventResult = await db.query(
       `SELECT id, date
        FROM events
