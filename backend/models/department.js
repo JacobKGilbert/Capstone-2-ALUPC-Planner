@@ -71,7 +71,7 @@ class Department {
 
     department.positions = await Position.getForDepartment(code)
 
-    department.voluteers = await User.findAllVolunteers(code)
+    department.volunteers = await User.findAllVolunteers(code)
 
     return department
   }
