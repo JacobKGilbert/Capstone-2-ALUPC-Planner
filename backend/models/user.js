@@ -143,7 +143,7 @@ class User {
       INNER JOIN departments AS d
         ON d.code = dv.dept_code
       WHERE d.code = $1
-      ORDER BY lastName DESC, firstName`,
+      ORDER BY last_name DESC, first_name`,
       [deptCode]
     )
 
