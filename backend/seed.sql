@@ -55,6 +55,6 @@ VALUES
 (1, 2, 'tch'),
 (1, 3, 'sopr');
 
-INSERT INTO unavailable (date, user_id)
+INSERT INTO unavailable (start_date, end_date, user_id)
 VALUES
-('2020-01-23', 1);
+('2022-01-23', '2022-01-24', 1);
