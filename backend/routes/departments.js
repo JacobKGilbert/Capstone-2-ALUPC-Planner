@@ -8,8 +8,10 @@ const express = require('express')
 const { ensureAdmin, ensureDeptHeadOrAdmin } = require('../middleware/auth')
 const { BadRequestError } = require('../expressError')
 const Department = require('../models/department')
+const Event = require('../models/event')
 const departmentCreationSchema = require('../schemas/departmentCreation.json')
 const departmentUpdateSchema = require('../schemas/departmentUpdate.json')
+const newEventSchema = require('../schemas/newEventSchema.json')
 
 const router = express.Router()
 
@@ -116,5 +118,20 @@ router.delete("/:code", ensureAdmin, async function (req, res, next) {
     return next(err);
   }
 });
+
+router.post('/:code/schedule', ensureDeptHeadOrAdmin, async function (req, res, next) {
+  try {
+    const validator = jsonschema.validate(req.body, newEventSchema)
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack)
+      throw new BadRequestError(errs)
+    }
+
+    const event = await Event.create(req.body, req.params.code)
+    return res.json({ event })
+  } catch (err) {
+    return next(err)
+  }
+})
 
 module.exports = router;
