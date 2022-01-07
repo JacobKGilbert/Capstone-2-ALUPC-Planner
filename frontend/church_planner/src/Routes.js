@@ -29,6 +29,13 @@ const RoutesList = () => {
             <Route path="schedule" element={<ScheduleForm />} />
           </Route>
         </Route>
+        <Route path='events'>
+          <Route index element={<h1>Events</h1>} />
+          <Route path=':eventId'>
+            <Route index element={<h1>Single Event</h1>} />
+
+          </Route>
+        </Route>
       </Route>
     </Routes>
   )
