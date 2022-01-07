@@ -92,17 +92,30 @@ async function updatePositionQuery(posCode, setCols, values) {
 
 async function getUnavailable(id) {
   const userUnavailableRes = await db.query(
-    `SELECT id, date
+    `SELECT id, 
+            start_date AS "startDate", 
+            end_date AS "endDate"
      FROM unavailable
      WHERE user_id = $1`,
     [id]
   )
 
-  const unavailable = userUnavailableRes.rows.map(
-      (u) => {
-        const formattedDate = u.date.toISOString().split('T')[0]
-        return {id: u.id, date: formattedDate}
-      }) || []
+  const getDaysArray = (start, end) => {
+    const daysArr = []
+    for (
+      let dt = new Date(start);
+      dt <= new Date(end);
+      dt.setDate(dt.getDate() + 1)
+    ) {
+      daysArr.push(new Date(dt))
+    }
+    return daysArr
+  }
+
+  const unavailable = userUnavailableRes.rows.map(u => {
+    const dates = getDaysArray(u.startDate, u.endDate)
+    return { id: u.id, dates: dates}
+  }) || []
 
   return unavailable
 }
