@@ -12,11 +12,12 @@ class Event {
    * Accepts date and deptCode
    * Returns Event { id, date, deptCode }
    */
-  static async create(date, deptCode) {
+  static async create(data, deptCode) {
+    const { date, positions } = data
     const duplicateCheck = await db.query(
       `SELECT id
        FROM events
-       WHERE date = $1 AND deptCode = $2`,
+       WHERE date = $1 AND dept_code = $2`,
       [date, deptCode]
     )
 
@@ -28,19 +29,41 @@ class Event {
     const result = await db.query(
       `INSERT INTO events (date, dept_code)
        VALUES ($1, $2)
-       RETURNING date, dept_code AS deptCode`,
+       RETURNING id, date, dept_code AS "deptCode"`,
       [date, deptCode]
     )
 
     const event = result.rows[0]
+    event.schedule = {}
+
+    for (const posCode in positions) {
+      if (Object.hasOwnProperty.call(positions, posCode)) {
+        if (positions[posCode] !== '') {
+          const userId = +positions[posCode]
+          await this.schedule(event.id, posCode, userId)
+          event.schedule[posCode] = userId
+        }
+      }
+    }
 
     return event
+  }
+
+  static async schedule(eventId, positionCode, userId) {
+    await db.query(
+      `INSERT INTO events_volunteers (event_id, user_id, position_code)
+       VALUES ($1, $2, $3)`,
+       [eventId, userId, positionCode]
+    )
+
+    return
   }
 
   static async getAllForUser(userId) {
     const userEventRes = await db.query(
       `SELECT e.id,
-              TO_CHAR(e.date::DATE, 'Day Month DD, YYYY') AS "date",
+              TO_CHAR(e.date::DATE, 'Day Month DD, YYYY') AS "formattedDate",
+              e.date,
               d.name AS "deptName",
               p.name AS "positionName"
        FROM events AS e
@@ -62,6 +85,7 @@ class Event {
         id: e.id,
         date: e.date,
         deptName: e.deptName,
+        formattedDate: e.formattedDate,
         positionName: e.positionName
       }
     }) || []
