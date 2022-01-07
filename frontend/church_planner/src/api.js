@@ -89,6 +89,12 @@ class ChurchPlannerApi {
     let res = await this.request(`departments/${code}`, {}, 'delete')
     return res
   }
+
+  //Event API Route calls
+  static async createEvent(data, code) {
+    let res = await this.request(`departments/${code}/schedule`, data, 'post')
+    return res.event
+  }
 }
 
 export default ChurchPlannerApi
