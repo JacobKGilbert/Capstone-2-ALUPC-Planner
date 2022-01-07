@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "date": "2022-01-30T06:00:00.000Z",
+      "positions": {}
+    }
+  ],
+  "required": ["date", "positions"],
+  "properties": {
+    "date": {
+      "$id": "#/properties/date",
+      "type": "string",
+      "title": "The date schema",
+      "description": "This property must contain a date in an ISO-8601 format",
+      "default": "",
+      "examples": ["2022-01-30T06:00:00.000Z"]
+    },
+    "positions": {
+      "$id": "#/properties/positions",
+      "type": "object",
+      "title": "The positions schema",
+      "description": "This property must contain position codes with an associated user id",
+      "default": {},
+      "examples": [{ "posCode": 1 }],
+      "required": [],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
