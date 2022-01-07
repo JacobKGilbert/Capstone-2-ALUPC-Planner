@@ -62,7 +62,7 @@ class Position {
 
     const positions =
       positionResult.rows.map((p) => {
-        return { id: p.id, name: p.name }
+        return { code: p.code, name: p.name }
       }) || []
 
     return positions
