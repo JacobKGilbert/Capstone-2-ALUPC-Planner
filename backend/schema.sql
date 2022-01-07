@@ -48,7 +48,8 @@ CREATE TABLE "events_volunteers" (
 
 CREATE TABLE "unavailable" (
   "id" INT PRIMARY KEY NOT NULL,
-  "date" DATE NOT NULL,
+  "start_date" DATE NOT NULL,
+  "end_date" DATE NOT NULL,
   "user_id" INT NOT NULL
 );
 
