@@ -15,10 +15,10 @@ const DepartmentsList = () => {
       setAllDepts(depts)
     }
 
-    if (!allDepts) {
+    if (currUser && currUser.isAdmin && !allDepts) {
       getAllDepts()
     }
-  }, [allDepts])
+  }, [currUser, allDepts])
 
   if (!currUser) {
     return <Navigate to={'/login'} />
