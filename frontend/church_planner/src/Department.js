@@ -17,10 +17,10 @@ const Department = () => {
       setDept(dept)
     }
 
-    if(!dept) {
+    if (currUser && (currUser.isAdmin || currUser.isDeptHead) && !dept) {
       getDept(deptCode)
     }
-  }, [dept, deptCode])
+  }, [currUser, dept, deptCode])
 
   if (!currUser) {
     return <Navigate to={`/login`} />
