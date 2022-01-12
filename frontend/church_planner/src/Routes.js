@@ -41,8 +41,4 @@ const RoutesList = () => {
   )
 }
 
-// const AuthUser = ({ children, redirectTo, user }) => {
-//   return user ? children : <Navigate to={redirectTo} />
-// }
-
 export default RoutesList
