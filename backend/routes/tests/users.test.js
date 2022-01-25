@@ -523,6 +523,67 @@ describe('PATCH /user/:id/auth', function() {
       },
     })
   })
+
+  test('works: makes user deptHead', async function () {
+    const resp = await request(app)
+      .patch('/users/1/auth')
+      .send({
+        isDeptHead: true,
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({
+      user: {
+        id: 1,
+        firstName: 'U1F',
+        lastName: 'U1L',
+        email: 'user1@user.com',
+        needsNewPwd: true,
+        isAdmin: false,
+        isDeptHead: true,
+      },
+    })
+  })
+
+  test('works: makes user admin and deptHead', async function () {
+    const resp = await request(app)
+      .patch('/users/1/auth')
+      .send({
+        isAdmin: true,
+        isDeptHead: true,
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({
+      user: {
+        id: 1,
+        firstName: 'U1F',
+        lastName: 'U1L',
+        email: 'user1@user.com',
+        needsNewPwd: true,
+        isAdmin: true,
+        isDeptHead: true,
+      },
+    })
+  })
+
+  test('fails: no such user', async function () {
+    const resp = await request(app)
+      .patch('/users/0/auth')
+      .send({
+        isAdmin: true,
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+
+    expect(resp.statusCode).toEqual(404)
+  })
+
+  test('fails: no data', async function () {
+    const resp = await request(app)
+      .patch('/users/1/auth')
+      .send({})
+      .set('authorization', `Bearer ${adminToken}`)
+
+    expect(resp.statusCode).toEqual(400)
+  })
 })
 
 /************************************** POST /users/:id/unavailable */
