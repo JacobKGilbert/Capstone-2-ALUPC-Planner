@@ -213,6 +213,7 @@ describe("GET /users/:id", function () {
         isDeptHead: false,
         positions: expect.any(Array),
         unavailable: expect.any(Array),
+        events: expect.any(Array),
       },
     });
   });
@@ -232,6 +233,7 @@ describe("GET /users/:id", function () {
         isDeptHead: false,
         positions: expect.any(Array),
         unavailable: expect.any(Array),
+        events: expect.any(Array),
       },
     })
   });
@@ -498,15 +500,41 @@ describe('PATCH /users/:id/password', function () {
   })
 })
 
+/************************************** PATCH /user/:id/auth */
+
+describe('PATCH /user/:id/auth', function() {
+
+  test('works: makes user admin', async function () {
+    const resp = await request(app)
+      .patch('/users/1/auth')
+      .send({
+        isAdmin: true,
+      })
+      .set('authorization', `Bearer ${adminToken}`)
+    expect(resp.body).toEqual({
+      user: {
+        id: 1,
+        firstName: 'U1F',
+        lastName: 'U1L',
+        email: 'user1@user.com',
+        needsNewPwd: true,
+        isAdmin: true,
+        isDeptHead: false,
+      },
+    })
+  })
+})
+
 /************************************** POST /users/:id/unavailable */
 
 describe('POST /users/:id/unavailable', function () {
-  const date = new Date(2022, 6, 16).toISOString().split('T')[0]
+  const startDate = new Date(2022, 6, 16).toISOString().split('T')[0]
+  const endDate = new Date(2022, 6, 17).toISOString().split('T')[0]
 
   test('works: for admin', async function () {
     const resp = await request(app)
       .post(`/users/1/unavailable`)
-      .send({ date })
+      .send({ dates: [startDate, endDate] })
       .set('authorization', `Bearer ${adminToken}`)
     expect(resp.body).toEqual({ msg: "Successfully made unavailable."})
 
@@ -520,23 +548,24 @@ describe('POST /users/:id/unavailable', function () {
       isAdmin: false,
       isDeptHead: false,
       positions: expect.any(Array),
+      events: expect.any(Array),
       unavailable: [
         {
           id: 1,
-          date: '2022-07-15'
+          dates: expect.any(Array),
         },
         {
           id: 2,
-          date: '2022-07-16'
-        }
-      ]
+          dates: expect.any(Array),
+        },
+      ],
     })
   })
 
   test('works: for correct user', async function () {
     const resp = await request(app)
       .post(`/users/1/unavailable`)
-      .send({ date })
+      .send({ dates: [startDate, endDate] })
       .set('authorization', `Bearer ${u1Token}`)
     expect(resp.body).toEqual({ msg: 'Successfully made unavailable.' })
 
@@ -550,14 +579,15 @@ describe('POST /users/:id/unavailable', function () {
       isAdmin: false,
       isDeptHead: false,
       positions: expect.any(Array),
+      events: expect.any(Array),
       unavailable: [
         {
           id: 1,
-          date: '2022-07-15',
+          dates: expect.any(Array),
         },
         {
           id: 3,
-          date: '2022-07-16',
+          dates: expect.any(Array),
         },
       ],
     })
@@ -566,7 +596,7 @@ describe('POST /users/:id/unavailable', function () {
   test('unauth if incorrect user', async function () {
     const resp = await request(app)
       .post(`/users/1/unavailable`)
-      .send({ date })
+      .send({ dates: [startDate, endDate] })
       .set('authorization', `Bearer ${u2Token}`)
     expect(resp.statusCode).toEqual(401)
   })
@@ -574,14 +604,14 @@ describe('POST /users/:id/unavailable', function () {
   test('unauth for anon', async function () {
     const resp = await request(app)
       .post(`/users/1/unavailable`)
-      .send({ date })
+      .send({ dates: [startDate, endDate] })
     expect(resp.statusCode).toEqual(401)
   })
 
   test('not found if no such user', async function () {
     const resp = await request(app)
       .post(`/users/0/unavailable`)
-      .send({ date })
+      .send({ dates: [startDate, endDate] })
       .set('authorization', `Bearer ${adminToken}`)
     expect(resp.statusCode).toEqual(404)
   })

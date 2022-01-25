@@ -25,6 +25,7 @@ describe("POST /auth/token", function () {
       password: 'password1',
     })
     expect(resp.body).toEqual({
+      "id": 1,
       "token": expect.any(String),
     });
   });

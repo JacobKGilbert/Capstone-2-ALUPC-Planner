@@ -36,8 +36,9 @@ async function commonBeforeAll() {
     isDeptHead: false
   });
 
-  const unvDate = new Date(2022, 6, 15)
-  await User.makeUnavailable(1, unvDate)
+  const unvStartDate = new Date(2022, 6, 15)
+  const unvEndDate = new Date(2022, 6, 15)
+  await User.makeUnavailable(1, [unvStartDate, unvEndDate])
 }
 
 async function commonBeforeEach() {
