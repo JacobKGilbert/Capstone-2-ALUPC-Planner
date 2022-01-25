@@ -193,6 +193,7 @@ describe("get", function () {
       isAdmin: false,
       isDeptHead: false,
       positions: expect.any(Array),
+      events: expect.any(Array),
       unavailable: expect.any(Array)
     })
   });
@@ -350,14 +351,14 @@ describe("update password", function () {
   })
 })
 
-/************************************** updateUserToAdminOrDeptHead */
+/************************************** updateUserPermissions */
 
-describe('updateUserToAdminOrDeptHead', function () {
+describe('updateUserPermissions', function () {
   test('works: updates to admin', async function () {
     const data = {
       isAdmin: true
     }
-    const user = await User.updateUserToAdminOrDeptHead(1, data)
+    const user = await User.updateUserPermissions(1, data)
     
     expect(user).toEqual({
       id: 1,
@@ -374,7 +375,7 @@ describe('updateUserToAdminOrDeptHead', function () {
     const data = {
       isDeptHead: true,
     }
-    const user = await User.updateUserToAdminOrDeptHead(1, data)
+    const user = await User.updateUserPermissions(1, data)
 
     expect(user).toEqual({
       id: 1,
@@ -392,7 +393,7 @@ describe('updateUserToAdminOrDeptHead', function () {
       isDeptHead: true,
     }
     try {
-      const user = await User.updateUserToAdminOrDeptHead(0, data)
+      const user = await User.updateUserPermissions(0, data)
       fail()
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy()
@@ -404,10 +405,11 @@ describe('updateUserToAdminOrDeptHead', function () {
 
 describe('availability', function () {
   test('works: makes unavailable', async function () {
-    const date = new Date(2022, 6, 15)
-    const result = await User.makeUnavailable(1, date)
+    const startDate = new Date(2022, 6, 14)
+    const endDate = new Date(2022, 6, 15)
+    const result = await User.makeUnavailable(1, [startDate, endDate])
 
-    expect(result).toEqual({ id: 2 })
+    expect(result).toEqual(undefined)
   })
 
   test('works: makes available', async function () {
@@ -415,17 +417,6 @@ describe('availability', function () {
     const result = await User.makeAvailable(1)
 
     expect(result).toEqual({ id: 1 })
-  })
-
-  test('works: get user unavailability', async function () {
-    const result = await User.getUnavailable(1)
-
-    expect(result).toEqual([
-      {
-        id: 1,
-        date: expect.any(Date)
-      }
-    ])
   })
 })
 

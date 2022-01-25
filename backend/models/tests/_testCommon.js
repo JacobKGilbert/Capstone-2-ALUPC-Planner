@@ -32,12 +32,13 @@ async function commonBeforeAll() {
   )
 
   //Create unavailable
-  const testDate = new Date(2022, 6, 16)
+  const testStartDate = new Date(2022, 6, 16)
+  const testEndDate = new Date(2022, 6, 17)
   await db.query(
-    `INSERT INTO unavailable (user_id, date)
-     VALUES ($1, $2)
+    `INSERT INTO unavailable (user_id, start_date, end_date)
+     VALUES ($1, $2, $3)
      RETURNING id`,
-     [1, testDate]
+     [1, testStartDate, testEndDate]
   )
 }
 
