@@ -10,7 +10,6 @@ const {
   commonAfterEach,
   commonAfterAll,
 } = require('./_testCommon')
-const { findAllVolunteers } = require('../user')
 
 beforeAll(commonBeforeAll)
 beforeEach(commonBeforeEach)
