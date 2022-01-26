@@ -17,10 +17,6 @@ const router = express.Router()
 
 /** POST / => { department } => { department }
  *
- * Adds a new user. This is not the registration endpoint --- instead, this is
- * only for admin users to add new users. The new user being added can be an
- * admin or department head.
- *
  *  {department: { code, name, deptHead } }
  *
  * Authorization required: admin

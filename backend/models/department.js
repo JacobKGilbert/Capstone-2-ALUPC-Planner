@@ -15,7 +15,7 @@ class Department {
   /** Create a new department.
    * Accepts code (max length of three char), name, and deptHead (may be null)
    */
-  static async create(code, name, deptHead) {
+  static async create({ code, name, deptHead }) {
     const duplicateCheck = await db.query(
       `SELECT code, name
        FROM departments
@@ -29,7 +29,7 @@ class Department {
     const result = await db.query(
       `INSERT INTO departments (code, name, dept_head)
        VALUES ($1, $2, $3)
-       RETURNING code, name, dept_head AS deptHead`,
+       RETURNING code, name, dept_head AS "deptHead"`,
       [code, name, deptHead]
     )
 
@@ -60,12 +60,14 @@ class Department {
 
   static async get(code) {
     const deptResult = await db.query(
-      `SELECT code, name, dept_head
+      `SELECT code, name, dept_head AS "deptHead"
        FROM departments
        WHERE code = $1`,
       [code]
     )
     const department = deptResult.rows[0]
+
+    if (!department) throw new BadRequestError('No such department.')
 
     department.events = await Event.getAllForDepartment(code)
 
@@ -88,7 +90,7 @@ class Department {
       [code]
     )
 
-    return result.rows[0]
+    return result.rows[0] || null
   }
 
   /** Update Department
@@ -118,6 +120,8 @@ class Department {
 
     if (!department)
       throw new NotFoundError(`No department with code: ${code}`)
+
+    return department
   }
 }
 

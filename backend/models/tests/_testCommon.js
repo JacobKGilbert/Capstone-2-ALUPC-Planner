@@ -9,6 +9,7 @@ async function commonBeforeAll() {
   await db.query(`ALTER TABLE users ALTER COLUMN id RESTART WITH 1`)
   await db.query(`DELETE FROM unavailable`)
   await db.query(`ALTER TABLE unavailable ALTER COLUMN id RESTART WITH 1`)
+  await db.query(`DELETE FROM departments`)
 
   //Create test users
   await db.query(
@@ -39,6 +40,19 @@ async function commonBeforeAll() {
      VALUES ($1, $2, $3)
      RETURNING id`,
      [1, testStartDate, testEndDate]
+  )
+
+  await db.query(
+    `INSERT INTO departments (code, name, dept_head)
+       VALUES ($1, $2, $3)
+       RETURNING code`,
+    ['old', 'Old Department', 4]
+  )
+  await db.query(
+    `INSERT INTO departments (code, name, dept_head)
+       VALUES ($1, $2, $3)
+       RETURNING code`,
+    ['ndh', 'No Department Head', null]
   )
 }
 
