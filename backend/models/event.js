@@ -168,6 +168,8 @@ class Event {
     const event = result.rows[0]
 
     if (!event) throw new NotFoundError(`No event with id: ${id}`)
+
+    return event
   }
 }
 

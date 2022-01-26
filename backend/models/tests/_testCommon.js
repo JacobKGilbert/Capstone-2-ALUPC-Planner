@@ -10,6 +10,9 @@ async function commonBeforeAll() {
   await db.query(`DELETE FROM unavailable`)
   await db.query(`ALTER TABLE unavailable ALTER COLUMN id RESTART WITH 1`)
   await db.query(`DELETE FROM departments`)
+  await db.query(`DELETE FROM positions`)
+  await db.query(`DELETE FROM events`)
+  await db.query(`ALTER TABLE events ALTER COLUMN id RESTART WITH 1`)
 
   //Create test users
   await db.query(
@@ -42,6 +45,7 @@ async function commonBeforeAll() {
      [1, testStartDate, testEndDate]
   )
 
+  //Create Departments
   await db.query(
     `INSERT INTO departments (code, name, dept_head)
        VALUES ($1, $2, $3)
@@ -53,6 +57,25 @@ async function commonBeforeAll() {
        VALUES ($1, $2, $3)
        RETURNING code`,
     ['ndh', 'No Department Head', null]
+  )
+
+  //Create Positions
+  await db.query(
+    `INSERT INTO positions (code, name, dept_code)
+     VALUES ($1, $2, $3)`,
+     ['test', 'Test Position', 'old']
+  )
+
+  await db.query(
+    `INSERT INTO events (date, dept_code)
+     VALUES ($1, $2)`,
+     [new Date(2022, 6, 15), 'old']
+  )
+
+  await db.query(
+    `INSERT INTO events_volunteers (user_id, event_id, position_code)
+     VALUES ($1, $2, $3)`,
+     [2, 1, 'test']
   )
 }
 
