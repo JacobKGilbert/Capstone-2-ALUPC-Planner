@@ -150,6 +150,15 @@ describe("GET /users", function () {
         },
         {
           id: expect.any(Number),
+          firstName: 'D1F',
+          lastName: 'D1L',
+          email: 'deptHead1@user.com',
+          needsNewPwd: true,
+          isAdmin: false,
+          isDeptHead: true,
+        },
+        {
+          id: expect.any(Number),
           firstName: 'U1F',
           lastName: 'U1L',
           email: 'user1@user.com',

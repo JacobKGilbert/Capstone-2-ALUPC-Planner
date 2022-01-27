@@ -2,6 +2,9 @@
 
 const db = require("../../db");
 const User = require("../../models/user");
+const Department = require('../../models/department')
+const Position = require('../../models/position')
+const Event = require('../../models/event')
 const { createToken } = require("../../helpers/tokens");
 
 async function commonBeforeAll() {
@@ -10,6 +13,10 @@ async function commonBeforeAll() {
   await db.query(`ALTER TABLE users ALTER COLUMN id RESTART WITH 1`)
   await db.query(`DELETE FROM unavailable`)
   await db.query(`ALTER TABLE unavailable ALTER COLUMN id RESTART WITH 1`)
+  await db.query(`DELETE FROM departments`)
+  await db.query(`DELETE FROM positions`)
+  await db.query(`DELETE FROM events`)
+  await db.query(`ALTER TABLE events ALTER COLUMN id RESTART WITH 1`)
 
   await User.register({
     firstName: "U1F",
@@ -35,6 +42,33 @@ async function commonBeforeAll() {
     isAdmin: true,
     isDeptHead: false
   });
+  await User.register({
+    firstName: "D1F",
+    lastName: "D1L",
+    email: "deptHead1@user.com",
+    password: "password4",
+    isAdmin: false,
+    isDeptHead: true
+  });
+
+  await Department.create({
+    code: 'old',
+    name: 'Old Department',
+    deptHead: 4
+  })
+
+  await Position.create({
+    code: 'test',
+    name: 'Test Position',
+    deptCode: 'old'
+  })
+
+  await Event.create({
+    date: new Date(2022, 6, 16),
+    positions: {
+      'test': 1
+    }
+  }, 'old')
 
   const unvStartDate = new Date(2022, 6, 15)
   const unvEndDate = new Date(2022, 6, 15)
