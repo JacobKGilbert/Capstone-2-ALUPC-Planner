@@ -5,14 +5,14 @@ const {
   NotFoundError,
   BadRequestError,
 } = require('../expressError')
-const { updatePositionQuery } = require("../helpers/sql")
+const { sqlForPartialUpdate, updatePositionQuery } = require("../helpers/sql")
 
 /** Related functions for Positions. */
 class Position {
   /** Create a new position.
    * Accepts code (max length of four char), name, and deptCode (may not be null)
    */
-  static async create(code, name, deptCode) {
+  static async create({ code, name, deptCode }) {
     const duplicateCheck = await db.query(
       `SELECT code, name
        FROM positions
@@ -26,7 +26,7 @@ class Position {
     const result = await db.query(
       `INSERT INTO positions (code, name, dept_code)
        VALUES ($1, $2, $3)
-       RETURNING code, name, dept_code AS deptCode`,
+       RETURNING code, name, dept_code AS "deptCode"`,
       [code, name, deptCode]
     )
 
@@ -93,6 +93,8 @@ class Position {
     const position = result.rows[0]
 
     if (!position) throw new NotFoundError(`No position with code: ${code}`)
+
+    return position
   }
 }
 

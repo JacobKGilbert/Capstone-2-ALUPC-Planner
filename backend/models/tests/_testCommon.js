@@ -66,12 +66,21 @@ async function commonBeforeAll() {
      ['test', 'Test Position', 'old']
   )
 
+  //Create entry for user assigned to position
+  await db.query(
+    `INSERT INTO user_position (user_id, position_code)
+     VALUES ($1, $2)`,
+     [2, 'test']
+  )
+  
+  //Create Event
   await db.query(
     `INSERT INTO events (date, dept_code)
      VALUES ($1, $2)`,
      [new Date(2022, 6, 15), 'old']
   )
 
+  //Create entry for volunteer to be assigned to event
   await db.query(
     `INSERT INTO events_volunteers (user_id, event_id, position_code)
      VALUES ($1, $2, $3)`,
