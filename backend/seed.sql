@@ -1,6 +1,8 @@
-INSERT INTO users (first_name, last_name, email, password, is_admin)
+INSERT INTO users (first_name, last_name, email, password, is_admin, is_dept_head)
 VALUES 
-('Jacob', 'Gilbert', 'jacobkgilbert@protonmail.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', true);
+('Test', 'User', 'user@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', false, false),
+('Test', 'Admin', 'admin@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', true, false),
+('Test', 'DeptHead', 'depthead@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', false, false);
 
 INSERT INTO departments (code, name, dept_head)
 VALUES
