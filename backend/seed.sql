@@ -1,8 +1,8 @@
 INSERT INTO users (first_name, last_name, email, password, is_admin, is_dept_head)
 VALUES 
-('Test', 'User', 'user@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', false, false),
-('Test', 'Admin', 'admin@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', true, false),
-('Test', 'DeptHead', 'depthead@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', false, true);
+('Test', 'User', 'user@test.com', '$2a$10$cRjlL0vqWhf4ax.uKB.uK.tAdKVK.cCrEVYbGw9fUe1GrD1DTCIBm', false, false),
+('Test', 'Admin', 'admin@test.com', '$2a$10$cRjlL0vqWhf4ax.uKB.uK.tAdKVK.cCrEVYbGw9fUe1GrD1DTCIBm', true, false),
+('Test', 'DeptHead', 'depthead@test.com', '$2a$10$cRjlL0vqWhf4ax.uKB.uK.tAdKVK.cCrEVYbGw9fUe1GrD1DTCIBm', false, true);
 
 INSERT INTO departments (code, name, dept_head)
 VALUES
