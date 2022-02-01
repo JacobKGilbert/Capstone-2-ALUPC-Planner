@@ -1,8 +1,8 @@
 INSERT INTO users (first_name, last_name, email, password, is_admin, is_dept_head)
 VALUES 
-('Test', 'User', 'user@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', false, false),
-('Test', 'Admin', 'admin@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', true, false),
-('Test', 'DeptHead', 'depthead@test.com', '$2a$12$GxfBZT9wqh8FXnouJfLvcewb6wb0tA.kqkJIx33SgVL9Upl/E3AQC', false, true);
+('Test', 'User', 'user@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', false, false),
+('Test', 'Admin', 'admin@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', true, false),
+('Test', 'DeptHead', 'depthead@test.com', '$2y$12$JYxWVdddVj5E/enkP0D.Me3YIdBuefaIno54miXF8gg8XlDtXe5Vm', false, true);
 
 INSERT INTO departments (code, name, dept_head)
 VALUES
@@ -13,7 +13,7 @@ VALUES
 ('snd', 'Sound', null),
 ('vsl', 'Visual', null),
 ('ush', 'Ushers', null),
-('tch', 'Tech', 1);
+('tch', 'Tech', 3);
 
 INSERT INTO positions (code, name, dept_code)
 VALUES
