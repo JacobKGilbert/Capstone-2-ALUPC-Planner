@@ -19,8 +19,6 @@ Church Planner was created to help reduce the confusion of scheduling volunteers
 
 ## To run tests simply run `npm test` in both backend and church_planner directories.
 
-***Note** that backend tests for routes have failed since adding CORS options. I'm looking for a solution.*
-
 ## Test users login info:
 Admin
 - admin@test.com
