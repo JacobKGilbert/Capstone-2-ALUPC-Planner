@@ -14,12 +14,21 @@ const morgan = require("morgan");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: 'https://church-planner-jkg-capstone-2.vercel.app',
-    credentials: true,
-  })
-)
+//Configure CORS
+const whitelist = ['https://church-planner-jkg-capstone-2.vercel.app', 'http://localhost:3000']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}
+app.use(cors(corsOptions))
+
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
