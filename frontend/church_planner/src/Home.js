@@ -4,8 +4,7 @@ import { Button, ButtonGroup } from 'reactstrap'
 import AuthContext from './AuthContext'
 
 const Home = () => {
-  const { currUser } = useContext(AuthContext)
-  const id = JSON.parse(localStorage.getItem('id'))
+  const { currUser, locId } = useContext(AuthContext)
 
   if (!currUser) {
     return (
@@ -22,7 +21,7 @@ const Home = () => {
       </div>
     )
   } else {
-    return <Navigate to={`/users/${id}`} />
+    return <Navigate to={`/users/${locId}`} />
   } 
 }
 
