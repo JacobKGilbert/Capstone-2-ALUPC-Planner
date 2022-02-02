@@ -8,7 +8,7 @@ import MyTooltip from './Tooltip'
 
 const Profile = () => {
   const { currUser } = useContext(AuthContext)
-  const [ user, setUser ] = useState()
+  const [ user, setUser ] = useState(null)
   const { id } = useParams()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Profile = () => {
   if (!user) {
     return <h1>Loading...</h1>
   } else {
-    if (!(currUser.id === id || currUser.isAdmin)) {
+    if (!(user && (currUser.id === +id || currUser.isAdmin))) {
       return <Navigate to={`users/${currUser.id}`} />
     } else {
       return (
