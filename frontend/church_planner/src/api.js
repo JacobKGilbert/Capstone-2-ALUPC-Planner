@@ -37,6 +37,7 @@ class ChurchPlannerApi {
 
   static async loginUser(data) {
     let res = await this.request('auth/token', data, 'post')
+    this.token = res.token
     return { tkn: res.token, id: res.id }
   }
 
